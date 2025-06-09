@@ -1,12 +1,266 @@
 <!DOCTYPE html>
-<html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta http-equiv="X-US-Compatible" content="IE=edge">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Document</title>>
-    </head>
-    <body>
-        <h1>ข้อมูลการขายสินค้า</h1>
-    </body>>
-    </html>>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>เข้าสู่ระบบ | ห้องสมุดออนไลน์</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet" />
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Noto Sans Thai', sans-serif;
+      background-image: url('Picture/1.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Navbar */
+    .navbar-container {
+      width: 100%;
+    }
+
+    .navbar-top {
+      background-color: #e0b700;
+      height: 6px;
+    }
+
+    .navbar {
+      background-color: white;
+      color: black;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-bottom {
+      background-color: #000080;
+      height: 4px;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-left img {
+      height: 36px;
+      margin-right: 10px;
+    }
+
+    .navbar-left span {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .navbar-right button {
+      background-color:rgb(1, 31, 138);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .navbar-right button:hover {
+      background-color:rgb(6, 13, 91);
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .login-container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 10px 40px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      width: 100%;
+      max-width: 400px;
+      box-sizing: border-box;
+    }
+
+    /* โลโก้และชื่อบนฟอร์ม */
+    .login-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 10px;
+      margin-top: 15px; 
+    }
+
+    .login-header img {
+      height: 100px;
+      margin-bottom: 10px;
+    }
+
+  .login-header span {
+      font-size: 30px;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #333;
+      font-size: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      background-color:rgb(1, 31, 138);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+      background-color:rgb(6, 13, 91);
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .register-link a {
+      color: #1e88e5;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+  width: 100%;
+  font-family: 'Noto Sans Thai', sans-serif;
+  margin-top: auto;
+}
+
+.footer-top,
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  text-align: center;
+}
+
+.footer-top {
+  background-color: #000080;
+  color: white;
+  font-size: 14px;
+  height: auto;
+}
+
+.footer-bottom {
+  background-color: #e0b700;
+  color: black;
+  font-size: 14px;
+  height: auto;
+}
+
+/* ปรับขนาดข้อความใน footer ให้เหมาะกับจอเล็ก */
+@media (max-width: 600px) {
+  .footer-top,
+  .footer-bottom {
+    font-size: 12px;
+    flex-direction: column;
+    padding: 8px;
+  }
+}
+
+
+  </style>
+</head>
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar-container">
+    <div class="navbar-top"></div>
+    <div class="navbar">
+      <div class="navbar-left">
+        <img src="Picture/logo.png" alt="โลโก้" />
+        <span>โรงเรียนเสนาธิการทหารเรือ</span>
+      </div>
+    </div>
+    <div class="navbar-bottom"></div>
+  </div>
+
+<!-- เนื้อหา -->
+<div class="content">
+  <div>
+    <!-- โลโก้และชื่อบนฟอร์ม -->
+    <div class="login-header">
+      <img src="Picture/logo.png" alt="โลโก้โรงเรียน" />
+      <span>โรงเรียนเสนาธิการทหารเรือ</span>
+    </div>
+    <br>
+    <br>
+    <br>
+    <div class="login-container">
+      <h2>เข้าสู่ระบบ</h2>
+      <form action="home.html" method="POST">
+        <label for="student_id">Username</label>
+        <input type="text" id="student_id" name="student_id" required />
+
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required />
+
+        <button type="submit">เข้าสู่ระบบ</button>
+      </form>
+      <div class="register-link">
+        ยังไม่มีบัญชี? <a href="register.html">สมัครสมาชิก</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Footer -->
+<footer>
+  <div class="footer-top">
+    <span>© 2025 โรงเรียนเสนาธิการทหารเรือ</span>
+  </div>
+  <div class="footer-bottom">
+    <span>หากประสบปัญหาโปรดติดต่อ : น.อ.ศักดิ์สิทธิ์ เตชะพงศ์ประเสริฐ โทร. 089-893-8805</span>
+  </div>
+</footer>
+
+</body>
+</html>

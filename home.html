@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>เข้าสู่ระบบ | ห้องสมุดออนไลน์</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet" />
+  <style>
+    /* Reset และตั้งค่าพื้นฐาน */
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Noto Sans Thai', sans-serif;
+      background-image: url('Picture/1.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* navbar */
+    .navbar-container {
+      width: 100%;
+      flex-shrink: 0;
+    }
+
+    .navbar-top {
+      background-color: #e0b700;
+      height: 6px;
+    }
+
+    .navbar {
+      background-color: white;
+      color: black;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-bottom {
+      background-color: #000080;
+      height: 4px;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-left img {
+      height: 36px;
+      margin-right: 10px;
+    }
+
+    .navbar-left span {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .navbar-right button {
+      background-color: rgb(186, 9, 9);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .navbar-right button:hover {
+      background-color: rgb(72, 17, 17);
+    }
+
+    /* header login */
+    .login-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 10px;
+      margin-top: 15px;
+      flex-shrink: 0;
+      text-align: center;
+      color: #333;
+    }
+
+    .login-header img {
+      height: 100px;
+      margin-bottom: 10px;
+    }
+
+    .login-header span {
+      font-size: 30px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .filter-bar {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* กล่อง dropdown แบบฟ้าอ่อน สวยเรียบ */
+    .custom-dropdown {
+      width: 200px;
+      padding: 0.6rem 1rem;
+      font-size: 1rem;
+      border: 2px solid #b3d4fc;
+      border-radius: 8px;
+      background-color: #eaf4ff;
+      color: #003366;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      appearance: none;
+      /* ลบสไตล์เบราว์เซอร์ */
+      background-image: url("data:image/svg+xml;utf8,<svg fill='003366' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 0.75rem center;
+      background-size: 1rem;
+      padding-right: 2.5rem;
+    }
+
+    /* Hover effect */
+    .custom-dropdown:hover {
+      background-color: #d4ebff;
+      border-color: #66bfff;
+    }
+
+    /* Focus effect */
+    .custom-dropdown:focus {
+      outline: none;
+      border-color: #3399ff;
+      box-shadow: 0 0 5px rgba(51, 153, 255, 0.6);
+    }
+
+    .filter-bar select,
+    .filter-bar input {
+      padding: 0.6rem 1rem;
+      font-size: 1rem;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      min-width: 180px;
+      box-sizing: border-box;
+      transition: border-color 0.3s ease;
+    }
+
+    .filter-bar select:focus,
+    .filter-bar input:focus {
+      outline: none;
+      border-color: #003366;
+      box-shadow: 0 0 5px #003366;
+    }
+
+    .nav-controls {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .custom-input {
+      width: 100%;
+      margin: 0 2rem 0 2rem;
+      padding: 0.6rem 1rem;
+      font-size: 1rem;
+      border: 2px solid #b3d4fc;
+      border-radius: 8px;
+      background-color: #ffffff;
+      color: #003366;
+      transition: all 0.3s ease;
+      width: 200px;
+    }
+
+    .custom-input:focus {
+      outline: none;
+      border-color: #3399ff;
+      box-shadow: 0 0 5px rgba(51, 153, 255, 0.6);
+    }
+
+    /* กริดหนังสือ */
+    .book-grid {
+      display: grid;
+      /*grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));*/
+      grid-template-columns: repeat(5, 1fr);
+      /* แสดง 2 การ์ดต่อแถว */
+      gap: 1rem;
+      padding: 2% 10% 5%;
+    }
+
+    .book-card {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background: #f9f9f9;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      width: 175px;
+      padding-bottom: 0.5rem;
+      margin: 0 auto;
+    }
+
+
+    .book-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .book-card img {
+      width: 100%;
+      height: 160px;
+      border-bottom: 1px solid #ddd;
+      object-fit: cover;
+      border-radius: 12px 12px 0 0;
+    }
+
+    .book-card .details {
+      padding: 0.5rem 0.8rem;
+      flex-grow: 1;
+    }
+
+    .book-card .details h4 {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #003366;
+      line-height: 1.2;
+    }
+
+    .book-card .details p {
+      margin: 0.3rem 0 0 0;
+      color: #666;
+      font-size: 0.75rem;
+    }
+
+    .read-button {
+      margin: 0.5rem 0.8rem 0 0.8rem;
+      /* บน-ขวา-ล่าง-ซ้าย */
+      background: #003366;
+      color: white;
+      padding: 0.5rem;
+      border: none;
+      border-radius: 20px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+
+    .read-button:hover {
+      background-color: #0055aa;
+    }
+
+    /* Responsive สำหรับมือถือและจอเล็ก */
+    @media (max-width: 600px) {
+      .book-grid {
+        grid-template-columns: repeat(2, 1fr);
+        /* แสดง 2 การ์ดต่อแถว */
+        gap: 1rem;
+        padding: 1rem;
+      }
+
+      .book-card {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        background: #f9f9f9;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        width: 140px;
+        /* กำหนดความกว้างคงที่ */
+        padding-bottom: 0.5rem;
+        margin: 0 auto;
+      }
+
+      .book-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .book-card img {
+        width: 100%;
+        height: 160px;
+        border-bottom: 1px solid #ddd;
+        object-fit: cover;
+        border-radius: 12px 12px 0 0;
+      }
+
+      .book-card .details {
+        padding: 0.5rem 0.8rem;
+        flex-grow: 1;
+      }
+
+      .book-card .details h4 {
+        margin: 0;
+        font-size: 0.9rem;
+        color: #003366;
+        line-height: 1.2;
+      }
+
+      .book-card .details p {
+        margin: 0.3rem 0 0 0;
+        color: #666;
+        font-size: 0.75rem;
+      }
+
+      .read-button {
+        margin: 0.5rem 0.8rem 0 0.8rem;
+        /* บน-ขวา-ล่าง-ซ้าย */
+        background: #003366;
+        color: white;
+        padding: 0.5rem;
+        border: none;
+        border-radius: 20px;
+        font-weight: bold;
+        font-size: 0.9rem;
+      }
+
+      .read-button:hover {
+        background-color: #0055aa;
+      }
+
+      .custom-input {
+        width: 60%;
+        margin: 0 2rem 0 2rem;
+        padding: 0.6rem 1rem;
+        font-size: 1rem;
+        border: 2px solid #b3d4fc;
+        border-radius: 8px;
+        background-color: #ffffff;
+        color: #003366;
+        transition: all 0.3s ease;
+      }
+
+      /* กล่อง dropdown แบบฟ้าอ่อน สวยเรียบ */
+      .custom-dropdown {
+        width: 60%;
+        margin: 0 2rem 0 2rem;
+        padding: 0.6rem 1rem;
+        font-size: 1rem;
+        border: 2px solid #b3d4fc;
+        border-radius: 8px;
+        background-color: #eaf4ff;
+        color: #003366;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        appearance: none;
+        /* ลบสไตล์เบราว์เซอร์ */
+        background-image: url("data:image/svg+xml;utf8,<svg fill='003366' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1rem;
+      }
+
+      /* Hover effect */
+      .custom-dropdown:hover {
+        background-color: #d4ebff;
+        border-color: #66bfff;
+      }
+
+      .nav-controls {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+
+    }
+
+    footer {
+      width: 100%;
+      font-family: 'Noto Sans Thai', sans-serif;
+      margin-top: auto;
+    }
+
+    .footer-top,
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 10px;
+      text-align: center;
+    }
+
+    .footer-top {
+      background-color: #000080;
+      color: white;
+      font-size: 14px;
+      height: auto;
+    }
+
+    .footer-bottom {
+      background-color: #e0b700;
+      color: black;
+      font-size: 14px;
+      height: auto;
+    }
+
+    /* ปรับขนาดข้อความใน footer ให้เหมาะกับจอเล็ก */
+    @media (max-width: 600px) {
+
+      .footer-top,
+      .footer-bottom {
+        font-size: 12px;
+        flex-direction: column;
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="navbar-container">
+    <div class="navbar-top"></div>
+    <div class="navbar">
+      <div class="navbar-left">
+        <img src="Picture/logo.png" alt="โลโก้" />
+        <span>โรงเรียนเสนาธิการทหารเรือ</span>
+      </div>
+      <div class="navbar-right">
+        <button onclick="location.href='index.html'">ออกจากระบบ</button>
+      </div>
+    </div>
+    <div class="navbar-bottom"></div>
+  </div>
+
+
+  <main>
+    <div class="login-header">
+      <img src="Picture/logo.png" alt="โลโก้โรงเรียน" />
+      <span>โรงเรียนเสนาธิการทหารเรือ</span>
+    </div>
+
+
+    <div class="nav-controls">
+      <select id="categorySelect" class="custom-dropdown" aria-label="เลือกหมวดหนังสือ"
+        onchange="filterBooks(this.value)">
+        <option value="ทั้งหมด">ทั้งหมด</option>
+        <option value="หมวดที่ 1">หมวดหนังสือ 1</option>
+        <option value="หมวดที่ 2">หมวดหนังสือ 2</option>
+        <option value="หมวดที่ 3">หมวดหนังสือ 3</option>
+      </select>
+      <br>
+      <input type="text" id="searchInput" class="custom-input" placeholder="ค้นหาหนังสือ..."
+        oninput="filterBooks(currentCategory)" />
+    </div>
+
+
+    <div class="book-grid">
+      <!-- หนังสือแต่ละเล่ม -->
+      <div class="book-card">
+        <!-- <img src="Picture/book4.jpg" alt="ปกหนังสือ" />-->
+        <img src="https://online.fliphtml5.com/ufhna/imuj/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/ufhna/imuj/" data-width="100%" data-height="100%">
+        <div class="details">
+          <h4>อภิชา เล่มที่ 1</h4>
+          <p>หมวดที่ 1</p>
+        </div>
+        <button class="read-button"
+          onclick="window.open('https://online.fliphtml5.com/ufhna/imuj/', '_blank')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card">
+        <!-- <img src="Picture/book4.jpg" alt="ปกหนังสือ" /> -->
+        <img src="https://online.fliphtml5.com/ufhna/hokp/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/ufhna/hokp/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>วิชาการ เล่มที่ 2</h4>
+          <p>หมวดที่ 2</p>
+        </div>
+        <button class="read-button"
+          onclick="window.open('https://online.fliphtml5.com/ufhna/hokp/', '_blank')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card">
+        <!-- <img src="Picture/book4.jpg" alt="ปกหนังสือ" /> -->
+        <img src="https://online.fliphtml5.com/ufhna/qigi/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/ufhna/qigi/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>ความรู้ เล่มที่ 3</h4>
+          <p>หมวดที่ 3</p>
+        </div>
+        <button class="read-button"
+          onclick="window.open('https://online.fliphtml5.com/ufhna/qigi/', '_blank')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card">
+        <!-- <img src="Picture/book4.jpg" alt="ปกหนังสือ" /> --> <img
+          src="https://online.fliphtml5.com/ufhna/ytbx/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/ufhna/ytbx/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>อภิชา เล่มที่ 4</h4>
+          <p>หมวดที่ 1</p>
+        </div>
+        <button class="read-button"
+          onclick="window.open('https://online.fliphtml5.com/ufhna/ytbx/', '_blank')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card">
+        <!-- <img src="Picture/book4.jpg" alt="ปกหนังสือ" /> -->
+        <img src="https://online.fliphtml5.com/ufhna/krmi/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/ufhna/krmi/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>วิชาการ เล่มที่ 5</h4>
+          <p>หมวดที่ 2</p>
+        </div>
+        <button class="read-button"
+          onclick="window.open('https://online.fliphtml5.com/ufhna/krmi/', '_blank')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card">
+        <img src="Picture/book4.jpg" alt="ปกหนังสือ" />
+        <div class="details">
+          <h4>วิชาการ เล่มที่ 5</h4>
+          <p>หมวดที่ 2</p>
+        </div>
+        <button class="read-button" onclick="window.open('', '_blank')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card">
+        <img src="Picture/book4.jpg" alt="ปกหนังสือ" />
+        <div class="details">
+          <h4>วิชาการ เล่มที่ 5</h4>
+          <p>หมวดที่ 1</p>
+        </div>
+        <button class="read-button" onclick="window.open('', '_blank')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card">
+        <img src="Picture/book4.jpg" alt="ปกหนังสือ" />
+        <div class="details">
+          <h4>วิชาการ เล่มที่ 5</h4>
+          <p>หมวดที่ 1</p>
+        </div>
+        <button class="read-button" onclick="window.open('', '_blank')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card">
+        <img src="Picture/book4.jpg" alt="ปกหนังสือ" />
+        <div class="details">
+          <h4>วิชาการ เล่มที่ 5</h4>
+          <p>หมวดที่ 3</p>
+        </div>
+        <button class="read-button" onclick="window.open('', '_blank')">อ่านหนังสือ</button>
+      </div>
+    </div>
+    </nav>
+  </main>
+  <!-- Footer -->
+  <footer>
+    <div class="footer-top">
+      <span>© 2025 โรงเรียนเสนาธิการทหารเรือ</span>
+    </div>
+    <div class="footer-bottom">
+      <span>หากประสบปัญหาโปรดติดต่อ : น.อ.ศักดิ์สิทธิ์ เตชะพงศ์ประเสริฐ โทร. 089-893-8805</span>
+    </div>
+  </footer>
+
+  <script>
+    let currentCategory = 'ทั้งหมด'; // เก็บหมวดปัจจุบัน
+
+    function filterBooks(category) {
+      currentCategory = category; // บันทึกหมวดที่เลือก
+
+      const input = document.getElementById("searchInput").value.toLowerCase();
+      const cards = document.querySelectorAll(".book-card");
+
+      cards.forEach(card => {
+        const title = card.querySelector("h4").innerText.toLowerCase();
+        const cat = card.querySelector("p").innerText.toLowerCase();
+
+        const matchesText = title.includes(input) || cat.includes(input);
+        const matchesCategory = category === "ทั้งหมด" || cat.includes(category.toLowerCase());
+
+        card.style.display = matchesText && matchesCategory ? "flex" : "none";
+      });
+    }
+  </script>
+</body>
+
+</html>
