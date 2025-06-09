@@ -12,7 +12,324 @@
       padding: 0;
       font-family: 'Noto Sans Thai', sans-serif;
       background-image: url('Picture/1.jpg');
+      background-size: cover;<!DOCTYPE html>
+<html lang="th">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>สมัครสมาชิก | ห้องสมุดออนไลน์</title>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet" />
+  <style>
+    html,
+    body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Noto Sans Thai', sans-serif;
+      background-image: url('Picture/1.jpg');
       background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .navbar-container {
+      width: 100%;
+    }
+
+    .navbar-top {
+      background-color: #e0b700;
+      height: 6px;
+    }
+
+    .navbar {
+      background-color: white;
+      color: black;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-bottom {
+      background-color: #000080;
+      height: 4px;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-left img {
+      height: 36px;
+      margin-right: 10px;
+    }
+
+    .navbar-left span {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .navbar-right button {
+      background-color: rgb(1, 31, 138);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .navbar-right button:hover {
+      background-color: rgb(6, 13, 91);
+    }
+
+    .content {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px 15px;
+    }
+
+    .register-container {
+      background: rgba(255, 255, 255, 0.95);
+      padding: 20px 25px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
+      width: 100%;
+      max-width: 700px;
+      box-sizing: border-box;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+      font-size: 20px;
+    }
+
+    form {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 15px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    label {
+      margin-bottom: 5px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="password"],
+    input[type="email"],
+    input[type="tel"],
+    select {
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .full-width {
+      grid-column: span 2;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      background-color: rgb(1, 31, 138);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+      background-color: rgb(6, 13, 91);
+    }
+
+    .login-link {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 15px;
+    }
+
+    .login-link a {
+      color: #1e88e5;
+      text-decoration: none;
+    }
+
+    .login-link a:hover {
+      text-decoration: underline;
+    }
+
+    @media (max-width: 768px) {
+      form {
+        grid-template-columns: 1fr;
+      }
+
+      .full-width {
+        grid-column: span 1;
+      }
+    }
+
+    footer {
+      width: 100%;
+      font-family: 'Noto Sans Thai', sans-serif;
+      margin-top: auto;
+    }
+
+    .footer-top,
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 10px;
+      text-align: center;
+    }
+
+    .footer-top {
+      background-color: #000080;
+      color: white;
+      font-size: 14px;
+      height: auto;
+    }
+
+    .footer-bottom {
+      background-color: #e0b700;
+      color: black;
+      font-size: 14px;
+      height: auto;
+    }
+
+    /* ปรับขนาดข้อความใน footer ให้เหมาะกับจอเล็ก */
+    @media (max-width: 600px) {
+
+      .footer-top,
+      .footer-bottom {
+        font-size: 12px;
+        flex-direction: column;
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navbar -->
+  <div class="navbar-container">
+    <div class="navbar-top"></div>
+    <div class="navbar">
+      <div class="navbar-left">
+        <img src="Picture/logo.png" alt="โลโก้" />
+        <span>โรงเรียนเสนาธิการทหารเรือ</span>
+      </div>
+      <div class="navbar-right">
+        <button onclick="location.href='index.html'">เข้าสู่ระบบ</button>
+      </div>
+    </div>
+    <div class="navbar-bottom"></div>
+  </div>
+
+  <!-- Content -->
+  <div class="content">
+    <div class="register-container">
+      <h2>สมัครสมาชิก</h2>
+      <form action="index.html" method="GET">
+        <div class="form-group">
+          <label for="rank">ยศ</label>
+          <select id="rank" name="rank" required>
+            <option value="">-- กรุณาเลือกยศ --</option>
+            <option value="พลเรือเอก">พลเรือเอก</option>
+            <option value="พลเรือโท">พลเรือโท</option>
+            <option value="พลเรือตรี">พลเรือตรี</option>
+            <option value="นาวาเอก">นาวาเอก</option>
+            <option value="นาวาโท">นาวาโท</option>
+            <option value="นาวาตรี">นาวาตรี</option>
+            <option value="เรือเอก">เรือเอก</option>
+            <option value="เรือโท">เรือโท</option>
+            <option value="เรือตรี">เรือตรี</option>
+            <option value="พันจ่าเอก">พันจ่าเอก</option>
+            <option value="พันจ่าโท">พันจ่าโท</option>
+            <option value="พันจ่าตรี">พันจ่าตรี</option>
+            <option value="จ่าเอก">จ่าเอก</option>
+            <option value="จ่าโท">จ่าโท</option>
+            <option value="จ่าตรี">จ่าตรี</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="fullname">ชื่อ-นามสกุล</label>
+          <input type="text" id="fullname" name="fullname" required />
+        </div>
+
+        <div class="form-group">
+          <label for="phone">เบอร์โทรศัพท์</label>
+          <input type="tel" id="phone" name="phone" pattern="[0-9]{9,10}" required />
+        </div>
+
+        <div class="form-group">
+          <label for="student_id">เลขประจำตัว</label>
+          <input type="text" id="student_id" name="student_id" required />
+        </div>
+
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required />
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required />
+        </div>
+
+        <div class="form-group">
+          <label for="course">หลักสูตร</label>
+          <input type="text" id="course" name="course" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" required />
+        </div>
+
+        <div class="form-group full-width">
+          <button type="submit">ยืนยัน</button>
+        </div>
+      </form>
+
+      <div class="login-link">
+        มีบัญชีแล้ว? <a href="index.html">เข้าสู่ระบบ</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-top">
+      <span>© 2025 โรงเรียนเสนาธิการทหารเรือ</span>
+    </div>
+    <div class="footer-bottom">
+      <span>หากประสบปัญหาโปรดติดต่อ : น.อ.ศักดิ์สิทธิ์ เตชะพงศ์ประเสริฐ โทร. 089-893-8805</span>
+    </div>
+  </footer>
+</body>
+
+</html>
       background-position: center;
       background-repeat: no-repeat;
       display: flex;
