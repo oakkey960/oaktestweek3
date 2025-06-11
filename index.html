@@ -96,7 +96,8 @@
       flex-direction: column;
       align-items: center;
       margin-bottom: 10px;
-      margin-top: 15px; 
+      margin-top: -30px; 
+      margin-bottom: -60px; 
     }
 
     .login-header img {
@@ -208,6 +209,7 @@
 
 
   </style>
+  
 </head>
 <body>
 
@@ -236,7 +238,7 @@
     <br>
     <div class="login-container">
       <h2>เข้าสู่ระบบ</h2>
-      <form action="home.html" method="GET">
+      <form id="login-form">  <!-- <form action="home.html" method="GET"> -->
         <label for="student_id">Username</label>
         <input type="text" id="student_id" name="student_id" required />
 
@@ -261,6 +263,42 @@
     <span>หากประสบปัญหาโปรดติดต่อ : น.อ.ศักดิ์สิทธิ์ เตชะพงศ์ประเสริฐ โทร. 089-893-8805</span>
   </div>
 </footer>
+
+
+<script>
+  document.getElementById('login-form').addEventListener('submit', function(event) {
+    event.preventDefault(); // หยุดฟอร์มไม่ให้ redirect อัตโนมัติ
+
+    const correctUsername = 'admin';
+    const correctPassword = '1234';
+
+    const enteredUsername = document.getElementById('student_id').value;
+    const enteredPassword = document.getElementById('password').value;
+
+    if (enteredUsername === correctUsername && enteredPassword === correctPassword) {
+      // บันทึกชื่อผู้ใช้ไว้ใน localStorage
+      localStorage.setItem('currentUser', enteredUsername);
+
+      // เก็บ log การ login
+      let loginLogs = JSON.parse(localStorage.getItem('loginLogs') || '[]');
+      loginLogs.push({
+        user: enteredUsername,
+        time: new Date().toISOString()
+      });
+      localStorage.setItem('loginLogs', JSON.stringify(loginLogs));
+
+      // ไปหน้า home.html
+      window.location.href = 'home.html';
+    } else {
+      alert('❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
+    }
+  });
+</script>
+
+
+
+
+
 
 </body>
 </html>
