@@ -6,6 +6,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>เข้าสู่ระบบ | ห้องสมุดออนไลน์</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet" />
+
+  <script>
+    // ป้องกันการเข้าหน้าโดยไม่ได้ login
+    const currentUser = localStorage.getItem('currentUser');
+    if (!currentUser) {
+      alert('กรุณาเข้าสู่ระบบก่อนใช้งาน');
+      window.location.href = 'index.html'; // กลับไปหน้า login
+    }
+  </script>
+
   <style>
     /* Reset และตั้งค่าพื้นฐาน */
     html,
@@ -64,19 +74,19 @@
       font-weight: bold;
     }
 
-    .navbar-right button {
-      background-color: rgb(186, 9, 9);
+    .dropbtn {
+      background-color: rgb(1, 31, 138);
       color: white;
+      padding: 8px 14px;
+      font-size: 14px;
       border: none;
-      padding: 6px 12px;
       border-radius: 6px;
-      font-size: 13px;
       cursor: pointer;
-      transition: background-color 0.3s ease;
+      font-weight: bold;
     }
 
-    .navbar-right button:hover {
-      background-color: rgb(72, 17, 17);
+    .dropbtn:hover {
+      background-color: rgb(6, 13, 91);
     }
 
     /* header login */
@@ -109,37 +119,115 @@
       flex-wrap: wrap;
     }
 
-    /* กล่อง dropdown แบบฟ้าอ่อน สวยเรียบ */
-    .custom-dropdown {
-      width: 200px;
-      padding: 0.6rem 1rem;
+    .nav-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .nav-controls .dropdown {
+      padding: 10px 16px;
       font-size: 1rem;
       border: 2px solid #b3d4fc;
-      border-radius: 8px;
-      background-color: #eaf4ff;
+      border-radius: 10px;
+      background-color: #ffffffcc;
+      min-width: 250px;
+      text-align: center;
+    }
+
+    .nav-controls .custom-input {
+      padding: 10px 16px;
+      font-size: 1.25rem;
+      border: 2px solid #b3d4fc;
+      border-radius: 10px;
+      background-color: #ffffff;
       color: #003366;
+      width: 250px;
+    }
+
+    .dropdown {
+      display: inline-block;
+      position: relative;
+      background-color: #ffffffcc;
+      border: 2px solid #b3d4fc;
+      border-radius: 12px;
+      padding: 0.75rem 1.5rem;
+      font-size: 1.1rem;
       cursor: pointer;
-      transition: all 0.3s ease;
-      appearance: none;
-      /* ลบสไตล์เบราว์เซอร์ */
-      background-image: url("data:image/svg+xml;utf8,<svg fill='003366' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-      background-repeat: no-repeat;
-      background-position: right 0.75rem center;
-      background-size: 1rem;
-      padding-right: 2.5rem;
     }
 
-    /* Hover effect */
-    .custom-dropdown:hover {
-      background-color: #d4ebff;
-      border-color: #66bfff;
+    .dropdown:hover {
+      background-color: rgb(101, 179, 238);
     }
 
-    /* Focus effect */
-    .custom-dropdown:focus {
-      outline: none;
-      border-color: #3399ff;
-      box-shadow: 0 0 5px rgba(51, 153, 255, 0.6);
+    .dropdown-list {
+      display: none;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      z-index: 999;
+      text-align: left;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      max-height: 500px;
+      overflow-y: auto;
+      min-width: 300px;
+    }
+
+    .dropdown:hover .dropdown-list {
+      display: block;
+    }
+
+    .dropdown-category {
+      position: relative;
+    }
+
+    .dropdown-item {
+      padding: 10px 15px;
+      cursor: pointer;
+      border-bottom: 1px solid #eee;
+    }
+
+    .dropdown-item:hover {
+      background-color: #f0f8ff;
+    }
+
+    /* เมนูย่อยแสดงเป็นแนวดิ่งด้านล่าง */
+    /* ปรับ .submenu ไม่ใช้ absolute แล้วซ้อนด้านล่าง */
+    .submenu {
+      display: none;
+      flex-direction: column;
+      background-color: rgb(203, 231, 255);
+      border-radius: 0 0 10px 10px;
+      padding: 5px 0;
+      box-shadow: inset 0 -1px 0 #ccc;
+    }
+
+
+
+    .dropdown-category:hover .submenu {
+      display: flex;
+    }
+
+    .submenu-item {
+      padding-left: 30px;
+      font-size: 0.95rem;
+      color: #333;
+      border-bottom: 1px solid #eee;
+    }
+
+    input.custom-input {
+      margin-top: 0rem;
+      padding: 10px;
+      font-size: 1rem;
+      width: 300px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
     }
 
     .filter-bar select,
@@ -158,14 +246,6 @@
       outline: none;
       border-color: #003366;
       box-shadow: 0 0 5px #003366;
-    }
-
-    .nav-controls {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 1rem;
-      margin-bottom: 1.5rem;
     }
 
     .custom-input {
@@ -191,7 +271,7 @@
     .book-grid {
       display: grid;
       /*grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));*/
-      grid-template-columns: repeat(5, 1fr);
+      grid-template-columns: repeat(6, 1fr);
       /* แสดง 2 การ์ดต่อแถว */
       gap: 1rem;
       padding: 2% 10% 5%;
@@ -258,6 +338,17 @@
 
     /* Responsive สำหรับมือถือและจอเล็ก */
     @media (max-width: 600px) {
+
+      .nav-controls .dropdown,
+      .nav-controls .custom-input {
+        width: 70%;
+      }
+
+      .nav-controls {
+        flex-direction: column;
+        align-items: center;
+      }
+
       .book-grid {
         grid-template-columns: repeat(2, 1fr);
         /* แสดง 2 การ์ดต่อแถว */
@@ -324,50 +415,104 @@
         background-color: #0055aa;
       }
 
-      .custom-input {
-        width: 60%;
-        margin: 0 2rem 0 2rem;
-        padding: 0.6rem 1rem;
-        font-size: 1rem;
-        border: 2px solid #b3d4fc;
-        border-radius: 8px;
-        background-color: #ffffff;
-        color: #003366;
-        transition: all 0.3s ease;
-      }
-
-      /* กล่อง dropdown แบบฟ้าอ่อน สวยเรียบ */
-      .custom-dropdown {
-        width: 60%;
-        margin: 0 2rem 0 2rem;
-        padding: 0.6rem 1rem;
-        font-size: 1rem;
-        border: 2px solid #b3d4fc;
-        border-radius: 8px;
-        background-color: #eaf4ff;
-        color: #003366;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        appearance: none;
-        /* ลบสไตล์เบราว์เซอร์ */
-        background-image: url("data:image/svg+xml;utf8,<svg fill='003366' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
-        background-repeat: no-repeat;
-        background-position: right 0.75rem center;
-        background-size: 1rem;
-      }
-
-      /* Hover effect */
-      .custom-dropdown:hover {
-        background-color: #d4ebff;
-        border-color: #66bfff;
-      }
-
       .nav-controls {
         display: flex;
-        flex-wrap: wrap;
         justify-content: center;
+        align-items: center;
+        flex-wrap: wrap;
         gap: 1rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .nav-controls .dropdown {
+        padding: 10px 16px;
+        font-size: 1rem;
+        border: 2px solid #b3d4fc;
+        border-radius: 10px;
+        background-color: #ffffffcc;
+        min-width: 70%;
+        text-align: center;
+      }
+
+      .nav-controls .custom-input {
+        padding: 10px 16px;
+        font-size: 1rem;
+        border: 2px solid #b3d4fc;
+        border-radius: 10px;
+        background-color: #ffffff;
+        color: #003366;
+        width: 70%;
+      }
+
+      .dropdown {
+        display: inline-block;
+        position: relative;
+        background-color: #ffffffcc;
+        border: 2px solid #b3d4fc;
+        border-radius: 12px;
+        padding: 0.75rem 1.5rem;
+        font-size: 1.1rem;
+        cursor: pointer;
+      }
+
+      .dropdown:hover {
+        background-color: rgb(101, 179, 238);
+      }
+
+      .dropdown-list {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: white;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        z-index: 999;
+        text-align: left;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        max-height: 500px;
+        overflow-y: auto;
+        min-width: 300px;
+      }
+
+      .dropdown:hover .dropdown-list {
+        display: block;
+      }
+
+      .dropdown-category {
+        position: relative;
+      }
+
+      .dropdown-item {
+        padding: 10px 15px;
+        cursor: pointer;
+        border-bottom: 1px solid #eee;
+      }
+
+      .dropdown-item:hover {
+        background-color: #f0f8ff;
+      }
+
+      /* เมนูย่อยแสดงเป็นแนวดิ่งด้านล่าง */
+      /* ปรับ .submenu ไม่ใช้ absolute แล้วซ้อนด้านล่าง */
+      .submenu {
+        display: none;
+        flex-direction: column;
+        background-color: white;
+        border-radius: 0 0 10px 10px;
+        padding: 5px 0;
+        box-shadow: inset 0 -1px 0 #ccc;
+      }
+
+      .dropdown-category:hover .submenu {
+        display: flex;
+      }
+
+      .submenu-item {
+        padding-left: 30px;
+        font-size: 0.95rem;
+        color: #333;
+        border-bottom: 1px solid #eee;
       }
 
     }
@@ -411,6 +556,53 @@
         padding: 8px;
       }
     }
+
+    .hamburger-menu {
+      position: relative;
+      display: inline-block;
+    }
+
+    .hamburger-icon {
+      background-color: rgb(1, 31, 138);
+      color: white;
+      padding: 8px 12px;
+      font-size: 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .hamburger-dropdown {
+      display: none;
+      position: absolute;
+      right: 0;
+      top: 110%;
+      background-color: white;
+      min-width: 180px;
+      border-radius: 6px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
+      z-index: 999;
+      text-align: left;
+    }
+
+    .hamburger-dropdown a,
+    .hamburger-user {
+      display: block;
+      padding: 10px 16px;
+      font-size: 14px;
+      color: #003366;
+      text-decoration: none;
+    }
+
+    .hamburger-dropdown a:hover {
+      background-color: #f0f0f0;
+    }
+
+    .hamburger-user {
+      font-weight: bold;
+      background-color: #f7f7f7;
+      border-bottom: 1px solid #ddd;
+    }
   </style>
 </head>
 
@@ -420,12 +612,26 @@
     <div class="navbar-top"></div>
     <div class="navbar">
       <div class="navbar-left">
-        <img src="Picture/logo.png" alt="โลโก้" />
-        <span>โรงเรียนเสนาธิการทหารเรือ</span>
+        <a href="home.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+          <img src="Picture/logo.png" alt="โลโก้" />
+          <span>โรงเรียนเสนาธิการทหารเรือ</span>
+        </a>
       </div>
-      <div class="navbar-right">
-        <button onclick="location.href='index.html'">ออกจากระบบ</button>
+
+
+
+      <div class="hamburger-menu">
+        <button class="hamburger-icon" onclick="toggleHamburgerMenu()">☰</button>
+        <div id="hamburgerDropdown" class="hamburger-dropdown">
+          <div class="hamburger-user">
+            👤 <span id="hamburgerUser">ผู้ใช้</span>
+          </div>
+          <a href="logs.html">📚 ประวัติการอ่าน</a>
+          <a href="index.html" onclick="logout()">🚪 ออกจากระบบ</a>
+        </div>
       </div>
+
+
     </div>
     <div class="navbar-bottom"></div>
   </div>
@@ -439,110 +645,217 @@
 
 
     <div class="nav-controls">
-      <select id="categorySelect" class="custom-dropdown" aria-label="เลือกหมวดหนังสือ"
-        onchange="filterBooks(this.value)">
-        <option value="ทั้งหมด">ทั้งหมด</option>
-        <option value="หมวดที่ 1">หมวดหนังสือ 1</option>
-        <option value="หมวดที่ 2">หมวดหนังสือ 2</option>
-        <option value="หมวดที่ 3">หมวดหนังสือ 3</option>
-      </select>
-      <br>
+      <div class="dropdown">
+        เลือกหมวดหนังสือ
+        <div class="dropdown-list" id="dropdownMenu">
+          <!-- เติมด้วย JS -->
+        </div>
+      </div>
       <input type="text" id="searchInput" class="custom-input" placeholder="ค้นหาหนังสือ..."
-        oninput="filterBooks(currentCategory)" />
+        oninput="filterBooks(currentCategory)">
     </div>
 
+    <script>
+      const subjects = {
+        "ผู้นำและการบริหาร": ["ผู้นำทางทหาร", "ผู้บริหารระดับกลางของ ทร."],
+        "การปฏิบัติการทางทหาร": ["การปฏิบัติการร่วม", "การยุทธร่วม", "การปฏิบัติการทางทหารนอกเหนือจากสงคราม", "กฎหมายทางทหาร"],
+        "หมวดวิชาผู้นำและการบริหาร": ["ผู้นำทางทหาร", "การบริหารองค์กรภาครัฐ"],
+        "หมวดวิชาความมั่นคงและยุทธศาสตร์": ["ความสัมพันธ์ระหว่างประเทศและเศรษฐกิจการเมือง", "หลักการและทฤษฎีการทำสงคราม", "แนวความคิดเรื่องความมั่นคงแห่งชาติ", "ยุทธศาสตร์และนโยบายความมั่นคง"],
+        "หมวดวิชาเสนาธิการกิจ": ["การเรียบเรียงและการบรรยาย", "การจัดและหน้าที่ฝ่ายเสนาธิการ/อำนวยการ"],
+        "หมวดวิชาปฏิบัติการทางทหาร": ["กฎหมายทางทหาร", "การปฏิบัติการทางทหาร"],
+        "หมวดวิชาสังคม": ["สังคม", "กิจกรรมและการบรรยายพิเศษ", "ดูกิจการและศึกษาภูมิประเทศ"]
+      };
+
+      let currentCategory = "ทั้งหมด"; // ✅ ประกาศครั้งเดียวพอ
+
+      function createDropdownMenu(subjects) {
+        const container = document.getElementById("dropdownMenu");
+        container.innerHTML = "";
+
+        const allItem = document.createElement("div");
+        allItem.className = "dropdown-item";
+        allItem.textContent = "ทั้งหมด";
+        allItem.onclick = () => {
+          currentCategory = "ทั้งหมด";
+          filterBooks(currentCategory);
+        };
+        container.appendChild(allItem);
+
+        for (const category in subjects) {
+          const wrapper = document.createElement("div");
+          wrapper.className = "dropdown-category";
+
+          const titleDiv = document.createElement("div");
+          titleDiv.className = "dropdown-item";
+          titleDiv.textContent = category;
+          titleDiv.onclick = () => {
+            currentCategory = category;
+            filterBooks(currentCategory);
+          };
+
+          const submenu = document.createElement("div");
+          submenu.className = "submenu";
+
+          subjects[category].forEach(sub => {
+            const subItem = document.createElement("div");
+            subItem.className = "submenu-item";
+            subItem.textContent = sub;
+            subItem.onclick = () => {
+              currentCategory = sub;
+              filterBooks(currentCategory);
+            };
+            submenu.appendChild(subItem);
+          });
+
+          wrapper.appendChild(titleDiv);
+          wrapper.appendChild(submenu);
+          container.appendChild(wrapper);
+        }
+      }
+
+      function filterBooks(category) {
+        const input = document.getElementById("searchInput").value.toLowerCase();
+        const cards = document.querySelectorAll(".book-card");
+
+        cards.forEach(card => {
+          const title = card.querySelector("h4").innerText.toLowerCase();
+          const cat = card.querySelector("p").innerText.toLowerCase();
+
+          const matchesText = title.includes(input) || cat.includes(input);
+          const matchesCategory =
+            category === "ทั้งหมด" || cat.includes(category.toLowerCase());
+
+          card.style.display = matchesText && matchesCategory ? "flex" : "none";
+        });
+      }
+
+      createDropdownMenu(subjects); // สร้างเมนูตอนโหลด
+      filterBooks("ทั้งหมด"); // เรียกกรองเริ่มต้น
+    </script>
 
     <div class="book-grid">
       <!-- หนังสือแต่ละเล่ม -->
       <div class="book-card">
-        <!-- <img src="Picture/book4.jpg" alt="ปกหนังสือ" />-->
-        <img src="https://online.fliphtml5.com/ufhna/imuj/files/shot.jpg" data-rel="fh5-light-box-demo"
-          data-href="https://online.fliphtml5.com/ufhna/imuj/" data-width="100%" data-height="100%">
+        <img src="https://online.fliphtml5.com/ufhna/pwpw/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/ufhna/pwpw/" data-width="400" data-height="250" data-title="">
         <div class="details">
-          <h4>อภิชา เล่มที่ 1</h4>
-          <p>หมวดที่ 1</p>
+          <h4>Terrorism in Southeast Asia</h4>
+          <p>ความมั่นคงและยุทธศาสตร์</p>
         </div>
         <button class="read-button"
-          onclick="window.open('https://online.fliphtml5.com/ufhna/imuj/', '_blank')">อ่านหนังสือ</button>
+          onclick="logAndOpen('Terrorism in Southeast Asia', 'https://online.fliphtml5.com/ufhna/pwpw/')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card">
+        <img src="https://online.fliphtml5.com/ufhna/ponb/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/ufhna/ponb/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>Sea Power (2nd Edition)</h4>
+          <p>หมวดวิชาสังคม</p>
+        </div>
+        <button class="read-button"
+          onclick="logAndOpen('Sea Power (2nd Edition)', 'https://online.fliphtml5.com/ufhna/ponb/')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card">
+        <img src="https://online.fliphtml5.com/cjmtx/bvzj/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/cjmtx/bvzj/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>The Navy_s Needs in Space for</h4>
+          <p>หมวดวิชาเสนาธิการกิจ</p>
+        </div>
+        <button class="read-button"
+          onclick="logAndOpen('Major Naval Operations', 'https://online.fliphtml5.com/cjmtx/bvzj/')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card">
+        <img src="https://online.fliphtml5.com/ufhna/qwfk/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/ufhna/qwfk/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>Major Naval Operations</h4>
+          <p>ผู้นำทางทหาร</p>
+        </div>
+        <button class="read-button"
+          onclick="logAndOpen('Major Naval Operations', 'https://online.fliphtml5.com/ufhna/qwfk/')">อ่านหนังสือ</button>
       </div>
       <div class="book-card">
         <!-- <img src="Picture/book4.jpg" alt="ปกหนังสือ" /> -->
-        <img src="https://online.fliphtml5.com/ufhna/hokp/files/shot.jpg" data-rel="fh5-light-box-demo"
-          data-href="https://online.fliphtml5.com/ufhna/hokp/" data-width="400" data-height="250" data-title="">
+        <img src="https://online.fliphtml5.com/ufhna/jlvt/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/ufhna/jlvt/" data-width="400" data-height="250" data-title="">
         <div class="details">
-          <h4>วิชาการ เล่มที่ 2</h4>
-          <p>หมวดที่ 2</p>
+          <h4>Campaign Planning</h4>
+          <p>หมวดวิชาปฏิบัติการทางทหาร</p>
         </div>
         <button class="read-button"
-          onclick="window.open('https://online.fliphtml5.com/ufhna/hokp/', '_blank')">อ่านหนังสือ</button>
+          onclick="logAndOpen('Campaign Planning', 'https://online.fliphtml5.com/ufhna/jlvt/')">อ่านหนังสือ</button>
       </div>
       <div class="book-card">
-        <!-- <img src="Picture/book4.jpg" alt="ปกหนังสือ" /> -->
-        <img src="https://online.fliphtml5.com/ufhna/qigi/files/shot.jpg" data-rel="fh5-light-box-demo"
-          data-href="https://online.fliphtml5.com/ufhna/qigi/" data-width="400" data-height="250" data-title="">
+        <img src="https://online.fliphtml5.com/ufhna/chys/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/ufhna/chys/" data-width="400" data-height="250" data-title="">
         <div class="details">
-          <h4>ความรู้ เล่มที่ 3</h4>
-          <p>หมวดที่ 3</p>
+          <h4>The Role of Naval Forces</h4>
+          <p>หมวดวิชาความมั่นคงและยุทธศาสตร์</p>
         </div>
         <button class="read-button"
-          onclick="window.open('https://online.fliphtml5.com/ufhna/qigi/', '_blank')">อ่านหนังสือ</button>
+          onclick="window.open('https://online.fliphtml5.com/ufhna/chys/')">อ่านหนังสือ</button>
       </div>
       <div class="book-card">
-        <!-- <img src="Picture/book4.jpg" alt="ปกหนังสือ" /> --> <img
-          src="https://online.fliphtml5.com/ufhna/ytbx/files/shot.jpg" data-rel="fh5-light-box-demo"
-          data-href="https://online.fliphtml5.com/ufhna/ytbx/" data-width="400" data-height="250" data-title="">
+        <img src="https://online.fliphtml5.com/ufhna/pxux/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/ufhna/pxux/" data-width="400" data-height="250" data-title="">
         <div class="details">
-          <h4>อภิชา เล่มที่ 4</h4>
-          <p>หมวดที่ 1</p>
+          <h4>Sea Change</h4>
+          <p>หมวดวิชาความมั่นคงและยุทธศาสตร์</p>
         </div>
         <button class="read-button"
-          onclick="window.open('https://online.fliphtml5.com/ufhna/ytbx/', '_blank')">อ่านหนังสือ</button>
+          onclick="window.open('https://online.fliphtml5.com/ufhna/pxux/', '_blank')">อ่านหนังสือ</button>
       </div>
       <div class="book-card">
-        <!-- <img src="Picture/book4.jpg" alt="ปกหนังสือ" /> -->
-        <img src="https://online.fliphtml5.com/ufhna/krmi/files/shot.jpg" data-rel="fh5-light-box-demo"
-          data-href="https://online.fliphtml5.com/ufhna/krmi/" data-width="400" data-height="250" data-title="">
+        <img src="https://online.fliphtml5.com/cjmtx/crow/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/cjmtx/crow/" data-width="400" data-height="250" data-title="">
         <div class="details">
-          <h4>วิชาการ เล่มที่ 5</h4>
-          <p>หมวดที่ 2</p>
+          <h4>U.S. Navy Environmental Health</h4>
+          <p>การปฏิบัติการทางทหาร</p>
         </div>
         <button class="read-button"
-          onclick="window.open('https://online.fliphtml5.com/ufhna/krmi/', '_blank')">อ่านหนังสือ</button>
+          onclick="window.open('https://online.fliphtml5.com/cjmtx/crow/')">อ่านหนังสือ</button>
       </div>
       <div class="book-card">
-        <img src="Picture/book4.jpg" alt="ปกหนังสือ" />
+        <img src="https://online.fliphtml5.com/cjmtx/jpve/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/cjmtx/jpve/" data-width="400" data-height="250" data-title="">
         <div class="details">
-          <h4>วิชาการ เล่มที่ 5</h4>
-          <p>หมวดที่ 2</p>
+          <h4>U.S.-Russian Collaboration</h4>
+          <p>หมวดวิชาความมั่นคงและยุทธศาสตร์</p>
         </div>
-        <button class="read-button" onclick="window.open('', '_blank')">อ่านหนังสือ</button>
+        <button class="read-button"
+          onclick="window.open('https://online.fliphtml5.com/cjmtx/jpve/')">อ่านหนังสือ</button>
       </div>
       <div class="book-card">
-        <img src="Picture/book4.jpg" alt="ปกหนังสือ" />
+        <img src="https://online.fliphtml5.com/cjmtx/zekx/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/cjmtx/zekx/" data-width="400" data-height="250" data-title="">
         <div class="details">
-          <h4>วิชาการ เล่มที่ 5</h4>
-          <p>หมวดที่ 1</p>
+          <h4>Undersea Vehicles and National Needs</h4>
+          <p>หมวดวิชาสังคม</p>
         </div>
-        <button class="read-button" onclick="window.open('', '_blank')">อ่านหนังสือ</button>
+        <button class="read-button"
+          onclick="window.open('https://online.fliphtml5.com/cjmtx/zekx/')">อ่านหนังสือ</button>
       </div>
       <div class="book-card">
-        <img src="Picture/book4.jpg" alt="ปกหนังสือ" />
+        <img src="https://online.fliphtml5.com/cjmtx/ymwm/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/cjmtx/ymwm/" data-width="400" data-height="250" data-title="">
         <div class="details">
-          <h4>วิชาการ เล่มที่ 5</h4>
-          <p>หมวดที่ 1</p>
+          <h4>Undersea Weapons Science</h4>
+          <p>หมวดวิชาผู้นำและการบริหาร</p>
         </div>
-        <button class="read-button" onclick="window.open('', '_blank')">อ่านหนังสือ</button>
+        <button class="read-button"
+          onclick="window.open('https://online.fliphtml5.com/cjmtx/ymwm/')">อ่านหนังสือ</button>
       </div>
-      <div class="book-card">
-        <img src="Picture/book4.jpg" alt="ปกหนังสือ" />
+      <!-- <div class="book-card">
+        <img src="https://online.fliphtml5.com/ufhna/pxux/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/ufhna/pxux/" data-width="400" data-height="250" data-title="">
         <div class="details">
-          <h4>วิชาการ เล่มที่ 5</h4>
-          <p>หมวดที่ 3</p>
+          <h4></h4>
+          <p>หมวดวิชาความมั่นคงและยุทธศาสตร์</p>
         </div>
-        <button class="read-button" onclick="window.open('', '_blank')">อ่านหนังสือ</button>
-      </div>
-    </div>
-    </nav>
+        <button class="read-button" onclick="window.open('')">อ่านหนังสือ</button>
+      </div> -->
+      </nav>
   </main>
   <!-- Footer -->
   <footer>
@@ -554,26 +867,42 @@
     </div>
   </footer>
 
+  <script src="log_user.js"></script>
   <script>
-    let currentCategory = 'ทั้งหมด'; // เก็บหมวดปัจจุบัน
+    function logAndOpen(bookTitle, bookUrl) {
+      const user = localStorage.getItem('currentUser') || 'ไม่ทราบชื่อผู้ใช้';
+      const timestamp = new Date().toISOString();
 
-    function filterBooks(category) {
-      currentCategory = category; // บันทึกหมวดที่เลือก
+      // เก็บ log ใน localStorage (ใช้กับ logs.html)
+      let readLogs = JSON.parse(localStorage.getItem('readLogs') || '[]');
+      readLogs.push({ user, book: bookTitle, time: timestamp, url: bookUrl }); // ✅ เพิ่ม url
+      localStorage.setItem('readLogs', JSON.stringify(readLogs));
 
-      const input = document.getElementById("searchInput").value.toLowerCase();
-      const cards = document.querySelectorAll(".book-card");
+      // ส่ง log ไปยัง server (ฟังก์ชันจาก log_user.js)
+      sendReadLog(user, bookTitle, timestamp);
 
-      cards.forEach(card => {
-        const title = card.querySelector("h4").innerText.toLowerCase();
-        const cat = card.querySelector("p").innerText.toLowerCase();
-
-        const matchesText = title.includes(input) || cat.includes(input);
-        const matchesCategory = category === "ทั้งหมด" || cat.includes(category.toLowerCase());
-
-        card.style.display = matchesText && matchesCategory ? "flex" : "none";
-      });
+      // เปิดลิงก์หนังสือ
+      window.open(bookUrl, '_blank');
     }
   </script>
+
+  <!-- dropdown -->
+  <script>
+    function toggleHamburgerMenu() {
+      const menu = document.getElementById('hamburgerDropdown');
+      menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+    }
+
+    function logout() {
+      localStorage.removeItem('currentUser');
+      window.location.href = 'index.html';
+    }
+
+    // แสดงชื่อผู้ใช้
+    document.getElementById('hamburgerUser').textContent =
+      localStorage.getItem('currentUser') || 'ผู้ใช้';
+  </script>
+
 </body>
 
 </html>
