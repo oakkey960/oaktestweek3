@@ -131,55 +131,52 @@
     .nav-controls .dropdown {
       padding: 10px 16px;
       font-size: 1rem;
-      border: 2px solid #b3d4fc;
+      border: 2px solid #2196f3;
       border-radius: 10px;
-      background-color: #ffffffcc;
+      background: linear-gradient(145deg, #f5faff, #e1f1ff);
+      color: #0d47a1;
+      font-weight: 600;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
       min-width: 250px;
       text-align: center;
+      transition: background 0.3s ease;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .nav-controls .dropdown:hover {
+      background: #bbdefb;
     }
 
     .nav-controls .custom-input {
       padding: 10px 16px;
       font-size: 1.25rem;
-      border: 2px solid #b3d4fc;
+      border: 2px solid #90caf9;
       border-radius: 10px;
       background-color: #ffffff;
       color: #003366;
       width: 250px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
     }
 
-    .dropdown {
-      display: inline-block;
-      position: relative;
-      background-color: #ffffffcc;
-      border: 2px solid #b3d4fc;
-      border-radius: 12px;
-      padding: 0.75rem 1.5rem;
-      font-size: 1.1rem;
-      cursor: pointer;
-    }
-
-    .dropdown:hover {
-      background-color: rgb(101, 179, 238);
-    }
-
+    /* ใช้ class .show เพื่อแสดงเมนูเมื่อคลิก */
     .dropdown-list {
       display: none;
       position: absolute;
       top: 100%;
       left: 0;
-      background-color: white;
-      border: 1px solid #ccc;
+      background: #ffffff;
+      border: 1px solid #ddd;
       border-radius: 10px;
       z-index: 999;
       text-align: left;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
       max-height: 500px;
       overflow-y: auto;
       min-width: 300px;
     }
 
-    .dropdown:hover .dropdown-list {
+    .dropdown-list.show {
       display: block;
     }
 
@@ -190,36 +187,41 @@
     .dropdown-item {
       padding: 10px 15px;
       cursor: pointer;
-      border-bottom: 1px solid #eee;
+      border-bottom: 1px solid #f0f0f0;
+      color: #333;
+      font-weight: 500;
+      transition: background 0.2s ease;
     }
 
     .dropdown-item:hover {
-      background-color: #f0f8ff;
+      background-color: #e3f2fd;
     }
 
-    /* เมนูย่อยแสดงเป็นแนวดิ่งด้านล่าง */
-    /* ปรับ .submenu ไม่ใช้ absolute แล้วซ้อนด้านล่าง */
     .submenu {
       display: none;
       flex-direction: column;
-      background-color: rgb(203, 231, 255);
+      background-color: #f9f9f9;
       border-radius: 0 0 10px 10px;
       padding: 5px 0;
       box-shadow: inset 0 -1px 0 #ccc;
     }
 
-
-
-    .dropdown-category:hover .submenu {
+    .dropdown-category.open .submenu {
       display: flex;
     }
 
     .submenu-item {
       padding-left: 30px;
       font-size: 0.95rem;
-      color: #333;
+      color: #444;
       border-bottom: 1px solid #eee;
+      transition: background 0.2s;
     }
+
+    .submenu-item:hover {
+      background-color: #e1f5fe;
+    }
+
 
     input.custom-input {
       margin-top: 0rem;
@@ -498,15 +500,14 @@
       .submenu {
         display: none;
         flex-direction: column;
-        background-color: white;
+        background-color: rgb(203, 231, 255);
         border-radius: 0 0 10px 10px;
         padding: 5px 0;
         box-shadow: inset 0 -1px 0 #ccc;
       }
 
-      .dropdown-category:hover .submenu {
-        display: flex;
-      }
+
+
 
       .submenu-item {
         padding-left: 30px;
@@ -646,27 +647,26 @@
 
     <div class="nav-controls">
       <div class="dropdown">
-        เลือกหมวดหนังสือ
+        <div class="dropdown-toggle" onclick="toggleDropdown()">เลือกหมวดหนังสือ ▾</div>
         <div class="dropdown-list" id="dropdownMenu">
-          <!-- เติมด้วย JS -->
+          <!-- JS เติมรายการ -->
         </div>
       </div>
+
       <input type="text" id="searchInput" class="custom-input" placeholder="ค้นหาหนังสือ..."
         oninput="filterBooks(currentCategory)">
     </div>
 
     <script>
       const subjects = {
-        "ผู้นำและการบริหาร": ["ผู้นำทางทหาร", "ผู้บริหารระดับกลางของ ทร."],
-        "การปฏิบัติการทางทหาร": ["การปฏิบัติการร่วม", "การยุทธร่วม", "การปฏิบัติการทางทหารนอกเหนือจากสงคราม", "กฎหมายทางทหาร"],
-        "หมวดวิชาผู้นำและการบริหาร": ["ผู้นำทางทหาร", "การบริหารองค์กรภาครัฐ"],
-        "หมวดวิชาความมั่นคงและยุทธศาสตร์": ["ความสัมพันธ์ระหว่างประเทศและเศรษฐกิจการเมือง", "หลักการและทฤษฎีการทำสงคราม", "แนวความคิดเรื่องความมั่นคงแห่งชาติ", "ยุทธศาสตร์และนโยบายความมั่นคง"],
-        "หมวดวิชาเสนาธิการกิจ": ["การเรียบเรียงและการบรรยาย", "การจัดและหน้าที่ฝ่ายเสนาธิการ/อำนวยการ"],
-        "หมวดวิชาปฏิบัติการทางทหาร": ["กฎหมายทางทหาร", "การปฏิบัติการทางทหาร"],
-        "หมวดวิชาสังคม": ["สังคม", "กิจกรรมและการบรรยายพิเศษ", "ดูกิจการและศึกษาภูมิประเทศ"]
+        "หมวดวิชาผู้นำและการบริหาร": ["- ผู้นำทางทหาร", "- การบริหารองค์กรภาครัฐ"],
+        "หมวดวิชาความมั่นคงและยุทธศาสตร์": ["- ความสัมพันธ์ระหว่างประเทศและเศรษฐกิจการเมือง", "- หลักการและทฤษฎีการทำสงคราม", "- แนวความคิดเรื่องความมั่นคงแห่งชาติ", "- ยุทธศาสตร์และนโยบายความมั่นคง"],
+        "หมวดวิชาเสนาธิการกิจ": ["- การเรียบเรียงและการบรรยาย", "- การจัดและหน้าที่ฝ่ายเสนาธิการ/อำนวยการ"],
+        "หมวดวิชาปฏิบัติการทางทหาร": ["- การปฏิบัติการร่วม", "- การยุทธร่วม", "- การปฏิบัติการทางทหารนอกเหนือจากสงคราม", "- กฎหมายทางทหาร"],
+        "หมวดวิชาสังคม": ["- สังคม", "- กิจกรรมและการบรรยายพิเศษ", "- ดูกิจการและศึกษาภูมิประเทศ"]
       };
 
-      let currentCategory = "ทั้งหมด"; // ✅ ประกาศครั้งเดียวพอ
+      let currentCategory = "ทั้งหมด";
 
       function createDropdownMenu(subjects) {
         const container = document.getElementById("dropdownMenu");
@@ -688,10 +688,6 @@
           const titleDiv = document.createElement("div");
           titleDiv.className = "dropdown-item";
           titleDiv.textContent = category;
-          titleDiv.onclick = () => {
-            currentCategory = category;
-            filterBooks(currentCategory);
-          };
 
           const submenu = document.createElement("div");
           submenu.className = "submenu";
@@ -700,12 +696,66 @@
             const subItem = document.createElement("div");
             subItem.className = "submenu-item";
             subItem.textContent = sub;
-            subItem.onclick = () => {
+            subItem.onclick = (e) => {
+              e.stopPropagation(); // ป้องกันคลิกทะลุไปปิด dropdown
               currentCategory = sub;
               filterBooks(currentCategory);
+              // ไม่ต้องปิด dropdown
             };
+
             submenu.appendChild(subItem);
           });
+
+          titleDiv.onclick = (e) => {
+            e.stopPropagation();
+
+            const isVisible = submenu.style.display === 'flex';
+
+            // ปิด submenu ทั้งหมดก่อน (ยกเว้น submenu นี้)
+            document.querySelectorAll(".submenu").forEach(menu => {
+              if (menu !== submenu) menu.style.display = 'none';
+            });
+
+            if (isVisible) {
+              // ถ้า submenu เปิดอยู่แล้ว กดครั้งที่ 2 ให้ปิด submenu และปิด dropdown ใหญ่ด้วย
+              submenu.style.display = 'none';
+              document.getElementById("dropdownMenu").classList.remove("show");
+              currentCategory = "ทั้งหมด";
+              filterBooks(currentCategory);
+            } else {
+              // ถ้า submenu ปิดอยู่ กดเปิด submenu และ filter ตามหมวดใหญ่
+              submenu.style.display = 'flex';
+
+              currentCategory = category;
+              const subCategories = subjects[category];
+
+              const input = document.getElementById("searchInput").value.toLowerCase().trim();
+              const cards = document.querySelectorAll(".book-card");
+
+              cards.forEach(card => {
+                const title = card.querySelector("h4").innerText.toLowerCase().trim();
+                const visibleCat = card.querySelector("p").innerText.toLowerCase().trim();
+                const hiddenCat = card.dataset.category?.toLowerCase().trim() || "";
+
+                const matchesText =
+                  title.includes(input) ||
+                  visibleCat.includes(input) ||
+                  hiddenCat.includes(input);
+
+                const matchesCategory = subCategories.some(sub => {
+                  return visibleCat === sub.toLowerCase().trim() || hiddenCat === sub.toLowerCase().trim();
+                });
+
+                card.style.display = matchesText && matchesCategory ? "flex" : "none";
+              });
+
+              // เปิด dropdown ใหญ่ไว้
+              document.getElementById("dropdownMenu").classList.add("show");
+            }
+          };
+
+
+
 
           wrapper.appendChild(titleDiv);
           wrapper.appendChild(submenu);
@@ -714,79 +764,104 @@
       }
 
       function filterBooks(category) {
-        const input = document.getElementById("searchInput").value.toLowerCase();
+        const input = document.getElementById("searchInput").value.toLowerCase().trim();
         const cards = document.querySelectorAll(".book-card");
+        const normalizedCategory = category.toLowerCase().trim();
 
         cards.forEach(card => {
-          const title = card.querySelector("h4").innerText.toLowerCase();
-          const cat = card.querySelector("p").innerText.toLowerCase();
+          const title = card.querySelector("h4").innerText.toLowerCase().trim();
+          const visibleCat = card.querySelector("p").innerText.toLowerCase().trim();
+          const hiddenCat = card.dataset.category?.toLowerCase().trim() || "";
 
-          const matchesText = title.includes(input) || cat.includes(input);
+          const matchesText =
+            title.includes(input) ||
+            visibleCat.includes(input) ||
+            hiddenCat.includes(input);
+
           const matchesCategory =
-            category === "ทั้งหมด" || cat.includes(category.toLowerCase());
+            normalizedCategory === "ทั้งหมด" ||
+            visibleCat === normalizedCategory ||
+            hiddenCat === normalizedCategory;
 
           card.style.display = matchesText && matchesCategory ? "flex" : "none";
         });
       }
 
-      createDropdownMenu(subjects); // สร้างเมนูตอนโหลด
-      filterBooks("ทั้งหมด"); // เรียกกรองเริ่มต้น
+      createDropdownMenu(subjects);
+      filterBooks("ทั้งหมด");
+
+      // แสดง / ซ่อน dropdown list เมื่อคลิก
+      document.querySelector(".dropdown-toggle").addEventListener("click", (e) => {
+        e.stopPropagation();
+        const dropdownList = document.getElementById("dropdownMenu");
+        dropdownList.classList.toggle("show");
+      });
+
+      // ปิด dropdown เมื่อคลิกข้างนอก
+      document.addEventListener("click", () => {
+        document.getElementById("dropdownMenu").classList.remove("show");
+        document.querySelectorAll(".submenu").forEach(menu => {
+          menu.style.display = "none";
+        });
+      });
+
     </script>
+
 
     <div class="book-grid">
       <!-- หนังสือแต่ละเล่ม -->
-      <div class="book-card">
+      <div class="book-card" data-category="- ผู้นำทางทหาร">
         <img src="https://online.fliphtml5.com/ufhna/pwpw/files/shot.jpg" data-rel="fh5-light-box-demo"
           data-href="https://online.fliphtml5.com/ufhna/pwpw/" data-width="400" data-height="250" data-title="">
         <div class="details">
           <h4>Terrorism in Southeast Asia</h4>
-          <p>ความมั่นคงและยุทธศาสตร์</p>
+          <p>หมวดวิชาผู้นำและการบริหาร</p>
         </div>
         <button class="read-button"
           onclick="logAndOpen('Terrorism in Southeast Asia', 'https://online.fliphtml5.com/ufhna/pwpw/')">อ่านหนังสือ</button>
       </div>
-      <div class="book-card">
+      <div class="book-card" data-category="- การบริหารองค์กรภาครัฐ">
         <img src="https://online.fliphtml5.com/ufhna/ponb/files/shot.jpg" data-rel="fh5-light-box-demo"
           data-href="https://online.fliphtml5.com/ufhna/ponb/" data-width="400" data-height="250" data-title="">
         <div class="details">
           <h4>Sea Power (2nd Edition)</h4>
-          <p>หมวดวิชาสังคม</p>
+          <p>หมวดวิชาผู้นำและการบริหาร</p>
         </div>
         <button class="read-button"
           onclick="logAndOpen('Sea Power (2nd Edition)', 'https://online.fliphtml5.com/ufhna/ponb/')">อ่านหนังสือ</button>
       </div>
-      <div class="book-card">
+      <div class="book-card" data-category="- ความสัมพันธ์ระหว่างประเทศและเศรษฐกิจการเมือง">
         <img src="https://online.fliphtml5.com/cjmtx/bvzj/files/shot.jpg" data-rel="fh5-light-box-demo"
           data-href="https://online.fliphtml5.com/cjmtx/bvzj/" data-width="400" data-height="250" data-title="">
         <div class="details">
           <h4>The Navy_s Needs in Space for</h4>
-          <p>หมวดวิชาเสนาธิการกิจ</p>
+          <p>หมวดวิชาความมั่นคงและยุทธศาสตร์</p>
         </div>
         <button class="read-button"
           onclick="logAndOpen('Major Naval Operations', 'https://online.fliphtml5.com/cjmtx/bvzj/')">อ่านหนังสือ</button>
       </div>
-      <div class="book-card">
+      <div class="book-card" data-category="- หลักการและทฤษฎีการทำสงคราม">
         <img src="https://online.fliphtml5.com/ufhna/qwfk/files/shot.jpg" data-rel="fh5-light-box-demo"
           data-href="https://online.fliphtml5.com/ufhna/qwfk/" data-width="400" data-height="250" data-title="">
         <div class="details">
           <h4>Major Naval Operations</h4>
-          <p>ผู้นำทางทหาร</p>
+          <p>หมวดวิชาความมั่นคงและยุทธศาสตร์</p>
         </div>
         <button class="read-button"
           onclick="logAndOpen('Major Naval Operations', 'https://online.fliphtml5.com/ufhna/qwfk/')">อ่านหนังสือ</button>
       </div>
-      <div class="book-card">
+      <div class="book-card" data-category="- แนวความคิดเรื่องความมั่นคงแห่งชาติ">
         <!-- <img src="Picture/book4.jpg" alt="ปกหนังสือ" /> -->
         <img src="https://online.fliphtml5.com/ufhna/jlvt/files/shot.jpg" data-rel="fh5-light-box-demo"
           data-href="https://online.fliphtml5.com/ufhna/jlvt/" data-width="400" data-height="250" data-title="">
         <div class="details">
           <h4>Campaign Planning</h4>
-          <p>หมวดวิชาปฏิบัติการทางทหาร</p>
+          <p>หมวดวิชาความมั่นคงและยุทธศาสตร์</p>
         </div>
         <button class="read-button"
           onclick="logAndOpen('Campaign Planning', 'https://online.fliphtml5.com/ufhna/jlvt/')">อ่านหนังสือ</button>
       </div>
-      <div class="book-card">
+      <div class="book-card" data-category="- ยุทธศาสตร์และนโยบายความมั่นคง">
         <img src="https://online.fliphtml5.com/ufhna/chys/files/shot.jpg" data-rel="fh5-light-box-demo"
           data-href="https://online.fliphtml5.com/ufhna/chys/" data-width="400" data-height="250" data-title="">
         <div class="details">
@@ -794,57 +869,187 @@
           <p>หมวดวิชาความมั่นคงและยุทธศาสตร์</p>
         </div>
         <button class="read-button"
-          onclick="window.open('https://online.fliphtml5.com/ufhna/chys/')">อ่านหนังสือ</button>
+          onclick="logAndOpen('The Role of Naval Forces','https://online.fliphtml5.com/ufhna/chys/')">อ่านหนังสือ</button>
       </div>
-      <div class="book-card">
+      <div class="book-card" data-category="- การเรียบเรียงและการบรรยาย">
         <img src="https://online.fliphtml5.com/ufhna/pxux/files/shot.jpg" data-rel="fh5-light-box-demo"
           data-href="https://online.fliphtml5.com/ufhna/pxux/" data-width="400" data-height="250" data-title="">
         <div class="details">
           <h4>Sea Change</h4>
-          <p>หมวดวิชาความมั่นคงและยุทธศาสตร์</p>
+          <p>หมวดวิชาเสนาธิการกิจ</p>
         </div>
         <button class="read-button"
-          onclick="window.open('https://online.fliphtml5.com/ufhna/pxux/', '_blank')">อ่านหนังสือ</button>
+          onclick="logAndOpen('Sea Change','https://online.fliphtml5.com/ufhna/pxux/', '_blank')">อ่านหนังสือ</button>
       </div>
-      <div class="book-card">
+      <div class="book-card" data-category="- การจัดและหน้าที่ฝ่ายเสนาธิการ/อำนวยการ">
         <img src="https://online.fliphtml5.com/cjmtx/crow/files/shot.jpg" data-rel="fh5-light-box-demo"
           data-href="https://online.fliphtml5.com/cjmtx/crow/" data-width="400" data-height="250" data-title="">
         <div class="details">
           <h4>U.S. Navy Environmental Health</h4>
-          <p>การปฏิบัติการทางทหาร</p>
+          <p>หมวดวิชาเสนาธิการกิจ</p>
         </div>
         <button class="read-button"
-          onclick="window.open('https://online.fliphtml5.com/cjmtx/crow/')">อ่านหนังสือ</button>
+          onclick="logAndOpen('U.S. Navy Environmental Health','https://online.fliphtml5.com/cjmtx/crow/')">อ่านหนังสือ</button>
       </div>
-      <div class="book-card">
+      <div class="book-card" data-category="- การปฏิบัติการร่วม">
         <img src="https://online.fliphtml5.com/cjmtx/jpve/files/shot.jpg" data-rel="fh5-light-box-demo"
           data-href="https://online.fliphtml5.com/cjmtx/jpve/" data-width="400" data-height="250" data-title="">
         <div class="details">
           <h4>U.S.-Russian Collaboration</h4>
-          <p>หมวดวิชาความมั่นคงและยุทธศาสตร์</p>
+          <p>หมวดวิชาปฏิบัติการทางทหาร</p>
         </div>
         <button class="read-button"
-          onclick="window.open('https://online.fliphtml5.com/cjmtx/jpve/')">อ่านหนังสือ</button>
+          onclick="logAndOpen('U.S.-Russian Collaboration','https://online.fliphtml5.com/cjmtx/jpve/')">อ่านหนังสือ</button>
       </div>
-      <div class="book-card">
+      <div class="book-card" data-category="- การยุทธร่วม">
         <img src="https://online.fliphtml5.com/cjmtx/zekx/files/shot.jpg" data-rel="fh5-light-box-demo"
           data-href="https://online.fliphtml5.com/cjmtx/zekx/" data-width="400" data-height="250" data-title="">
         <div class="details">
           <h4>Undersea Vehicles and National Needs</h4>
-          <p>หมวดวิชาสังคม</p>
+          <p>หมวดวิชาปฏิบัติการทางทหาร</p>
         </div>
         <button class="read-button"
-          onclick="window.open('https://online.fliphtml5.com/cjmtx/zekx/')">อ่านหนังสือ</button>
+          onclick="logAndOpen('Undersea Vehicles and National Need','https://online.fliphtml5.com/cjmtx/zekx/')">อ่านหนังสือ</button>
       </div>
-      <div class="book-card">
+      <div class="book-card" data-category="- การปฏิบัติการทางทหารนอกเหนือจากสงคราม">
         <img src="https://online.fliphtml5.com/cjmtx/ymwm/files/shot.jpg" data-rel="fh5-light-box-demo"
           data-href="https://online.fliphtml5.com/cjmtx/ymwm/" data-width="400" data-height="250" data-title="">
         <div class="details">
           <h4>Undersea Weapons Science</h4>
-          <p>หมวดวิชาผู้นำและการบริหาร</p>
+          <p>หมวดวิชาปฏิบัติการทางทหาร</p>
         </div>
         <button class="read-button"
-          onclick="window.open('https://online.fliphtml5.com/cjmtx/ymwm/')">อ่านหนังสือ</button>
+          onclick="logAndOpen('Undersea Weapons Science','https://online.fliphtml5.com/cjmtx/ymwm/')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card" data-category="- กฎหมายทางทหาร">
+        <img src="https://online.fliphtml5.com/fbqdg/lhgl/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/fbqdg/lhgl/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>U.S. Navy Cyber Defense Capabilitie</h4>
+          <p>หมวดวิชาปฏิบัติการทางทหาร</p>
+        </div>
+        <button class="read-button"
+          onclick="logAndOpen('U.S. Navy Cyber Defense Capabilitie','https://online.fliphtml5.com/fbqdg/lhgl/')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card" data-category="- สังคม">
+        <img src="https://online.fliphtml5.com/fbqdg/xzdw/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/fbqdg/xzdw/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>Science at Sea</h4>
+          <p>หมวดวิชาสังคม</p>
+        </div>
+        <button class="read-button"
+          onclick="logAndOpen('Science at Sea','https://online.fliphtml5.com/fbqdg/xzdw/')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card" data-category="- กิจกรรมและการบรรยายพิเศษ">
+        <img src="https://online.fliphtml5.com/fbqdg/xlzb/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/fbqdg/xlzb/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>Sea Basing</h4>
+          <p>หมวดวิชาสังคม</p>
+        </div>
+        <button class="read-button"
+          onclick="logAndOpen('Sea Basing','https://online.fliphtml5.com/fbqdg/xlzb/')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card" data-category="- ดูกิจการและศึกษาภูมิประเทศ">
+        <img src="https://online.fliphtml5.com/fbqdg/vwbi/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/fbqdg/vwbi/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>Sea Level Rise and Coastal Disasters</h4>
+          <p>หมวดวิชาสังคม</p>
+        </div>
+        <button class="read-button"
+          onclick="logAndOpen('Sea Level Rise and Coastal Disasters','https://online.fliphtml5.com/fbqdg/vwbi/')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card" data-category="- การปฏิบัติการทางทหาร">
+        <img src="https://online.fliphtml5.com/fbqdg/kbpo/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/fbqdg/kbpo/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>SEA-CHANGE-WEB</h4>
+          <p>หมวดวิชาปฏิบัติการทางทหาร</p>
+        </div>
+        <button class="read-button"
+          onclick="logAndOpen('SEA-CHANGE-WEB','https://online.fliphtml5.com/fbqdg/kbpo/')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card" data-category="- สังคม">
+        <img src="https://online.fliphtml5.com/jpmrg/igfj/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/jpmrg/igfj/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>Special Operations Forces</h4>
+          <p>หมวดวิชาสังคม</p>
+        </div>
+        <button class="read-button"
+          onclick="logAndOpen('Special Operations Forces','https://online.fliphtml5.com/jpmrg/igfj/')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card" data-category="- กิจกรรมและการบรรยายพิเศษ">
+        <img src="https://online.fliphtml5.com/jpmrg/bewy/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/jpmrg/bewy/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>Strategy for Active Remote Sensing</h4>
+          <p>หมวดวิชาสังคม</p>
+        </div>
+        <button class="read-button"
+          onclick="logAndOpen('Strategy for Active Remote Sensing','https://online.fliphtml5.com/jpmrg/bewy/')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card" data-category="- ดูกิจการและศึกษาภูมิประเทศ">
+        <img src="https://online.fliphtml5.com/jpmrg/kglg/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/jpmrg/kglg/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>Team Performance</h4>
+          <p>หมวดวิชาสังคม</p>
+        </div>
+        <button class="read-button"
+          onclick="logAndOpen('Team Performance','https://online.fliphtml5.com/jpmrg/kglg/')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card" data-category="- สังคม">
+        <img src="https://online.fliphtml5.com/jpmrg/tqse/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/jpmrg/tqse/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>Technology for the United States Navy vol 3</h4>
+          <p>หมวดวิชาสังคม</p>
+        </div>
+        <button class="read-button"
+          onclick="logAndOpen('Technology for the United States Navy vol 3','https://online.fliphtml5.com/jpmrg/tqse/')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card" data-category="- สังคม">
+        <img src="https://online.fliphtml5.com/mcypy/rwne/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/mcypy/rwne/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>The Role of Experimentation in Building Future</h4>
+          <p>หมวดวิชาสังคม</p>
+        </div>
+        <button class="read-button"
+          onclick="logAndOpen('The Role of Experimentation in Building Future','https://online.fliphtml5.com/mcypy/rwne/')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card" data-category="- สังคม">
+        <img src="https://online.fliphtml5.com/mcypy/icou/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/mcypy/icou/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>U.S. Conventional Prompt Global Strike</h4>
+          <p>หมวดวิชาสังคม</p>
+        </div>
+        <button class="read-button"
+          onclick="logAndOpen('U.S. Conventional Prompt Global Strike','https://online.fliphtml5.com/mcypy/icou/')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card" data-category="- สังคม">
+        <img src="https://online.fliphtml5.com/mcypy/amoz/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/mcypy/amoz/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>U.S. Naval Forces Capabilities</h4>
+          <p>หมวดวิชาสังคม</p>
+        </div>
+        <button class="read-button"
+          onclick="logAndOpen('U.S. Naval Forces Capabilities ','https://online.fliphtml5.com/mcypy/amoz/')">อ่านหนังสือ</button>
+      </div>
+      <div class="book-card" data-category="- สังคม">
+        <img src="https://online.fliphtml5.com/mcypy/gqod/files/shot.jpg" data-rel="fh5-light-box-demo"
+          data-href="https://online.fliphtml5.com/mcypy/gqod/" data-width="400" data-height="250" data-title="">
+        <div class="details">
+          <h4>U.S. Naval Forces Initial Observations</h4>
+          <p>หมวดวิชาสังคม</p>
+        </div>
+        <button class="read-button"
+          onclick="logAndOpen('U.S. Naval Forces Initial Observations','https://online.fliphtml5.com/mcypy/gqod/')">อ่านหนังสือ</button>
       </div>
       <!-- <div class="book-card">
         <img src="https://online.fliphtml5.com/ufhna/pxux/files/shot.jpg" data-rel="fh5-light-box-demo"
