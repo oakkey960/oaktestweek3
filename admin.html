@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>อัปโหลดหนังสือใหม่</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="cssadmin.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <script>
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    </script>
+
+</head>
+
+<body>
+    <h2>📘 เพิ่มหนังสือใหม่</h2>
+
+    <div class="container">
+        <!-- ซ้าย: ฟอร์ม -->
+        <div class="form-section">
+            <form id="uploadForm">
+                <label for="title">ชื่อหนังสือ</label>
+                <input type="text" id="title" name="title" required placeholder="ชื่อหนังสือจะถูกเติมอัตโนมัติ">
+                <!-- main -->
+                <label for="mainCategory">หมวดหลัก</label>
+                <select id="mainCategory" required>
+                    <option value="">-- เลือกหมวดหลัก --</option>
+                    <option value="หมวดวิชาผู้นำและการบริหาร">หมวดวิชาผู้นำและการบริหาร</option>
+                    <option value="หมวดวิชาความมั่นคงและยุทธศาสตร์">หมวดวิชาความมั่นคงและยุทธศาสตร์</option>
+                    <option value="หมวดวิชาเสนาธิการกิจ">หมวดวิชาเสนาธิการกิจ</option>
+                    <option value="หมวดวิชาปฏิบัติการทางทหาร">หมวดวิชาปฏิบัติการทางทหาร</option>
+                    <option value="หมวดวิชาสังคม">หมวดวิชาสังคม</option>
+                </select>
+
+                <label for="subCategory">หมวดย่อย</label>
+                <select id="subCategory" required>
+                    <option value="">-- เลือกหมวดย่อย --</option>
+                </select>
+
+                <input type="hidden" id="category" name="category" required>
+
+                <label for="pdf">ไฟล์ PDF หนังสือ</label>
+                <input type="file" id="pdf" accept="application/pdf" required>
+                <!-- end main -->
+                <button type="submit">📤 อัปโหลดหนังสือ</button>
+            </form>
+        </div>
+
+        <!-- ขวา: Preview -->
+        <div class="preview-section">
+            <div id="preview" style="display: none;">
+                <h3>ตัวอย่างหนังสือ</h3>
+                <img id="coverPreview" src="" alt="ปกหนังสือ">
+                <br>
+                <strong id="previewTitle"></strong><br>
+                <span id="previewCategory"></span><br><br>
+                <iframe id="pdfViewer" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- ✅ Supabase และการเชื่อมต่อ -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <script>
+        const { createClient } = supabase;
+        const supabaseClient = createClient(
+            "https://nceyapolnyhwzgssfson.supabase.co",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jZXlhcG9sbnlod3pnc3Nmc29uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5MjAwMjUsImV4cCI6MjA2NTQ5NjAyNX0.pCB24tf7CoLoHBGm4opDFk-n43Kc1n16PRgiMYHh8fo"
+        );
+        console.log(supabase);
+
+        document.getElementById("uploadForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const title = document.getElementById("title").value;
+            const mainCategory = document.getElementById("mainCategory").value;
+            const subCategory = document.getElementById("subCategory").value;
+            const pdfFile = document.getElementById("pdf").files[0];
+
+            if (!title || !mainCategory || !subCategory || !pdfFile) {
+                alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+                return;
+            }
+
+            try {
+                // 🔺 อัปโหลด PDF ไปยัง Supabase Storage
+                const filename = `${Date.now()}_${pdfFile.name}`;
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from("books")
+                    .upload(`pdfs/${filename}`, pdfFile);
+
+                if (uploadError) throw uploadError;
+
+                // 🔺 เอา URL สำหรับเข้าถึงไฟล์ PDF
+                const { data: publicUrlData } = supabase.storage
+                    .from("books")
+                    .getPublicUrl(`pdfs/${filename}`);
+
+                const pdf_url = publicUrlData.publicUrl;
+
+                // 🔺 เพิ่มข้อมูลลงใน Supabase Table books
+                const { error: insertError } = await supabase.from("books").insert([
+                    {
+                        title,
+                        category_main: mainCategory,
+                        category_sub: subCategory,
+                        pdf_url: pdf_url
+                    }
+                ]);
+
+                if (insertError) throw insertError;
+                alert("📚 อัปโหลดและบันทึกข้อมูลสำเร็จ!");
+                this.reset();
+                document.getElementById("preview").style.display = "none";
+            } catch (err) {
+                console.error(err);
+                alert("❌ เกิดข้อผิดพลาด: " + err.message);
+            }
+        });
+
+        // ====== หมวดหลักและย่อย ======
+        const subCategories = {
+            "หมวดวิชาผู้นำและการบริหาร": ["ผู้นำทางทหาร", "การบริหารองค์กรภาครัฐ"],
+            "หมวดวิชาความมั่นคงและยุทธศาสตร์": ["ความสัมพันธ์ระหว่างประเทศและเศรษฐกิจการเมือง",
+                "หลักยุทธศาสตร์และความมั่นคงทางทะเลของไทย", "ยุทธศาสตร์และนโยบาย"],
+            "หมวดวิชาเสนาธิการกิจ": ["การเรียบเรียงและการบรรยาย", "การจัดและหน้าที่ฝ่ายเสนาธิการ/อำนวยการ"],
+            "หมวดวิชาปฏิบัติการทางทหาร": ["การปฏิบัติการทางทหาร", "กฎหมายทางทหาร"],
+            "หมวดวิชาสังคม": ["สังคม", "กิจกรรมและการบรรยายพิเศษ", "ดูกิจการและศึกษาภูมิประเทศ"]
+        };
+
+        const mainSelect = document.getElementById("mainCategory");
+        const subSelect = document.getElementById("subCategory");
+        const categoryInput = document.getElementById("category");
+
+        mainSelect.addEventListener("change", function () {
+            const main = this.value;
+            subSelect.innerHTML = '<option value="">-- เลือกหมวดย่อย --</option>';
+            if (subCategories[main]) {
+                subCategories[main].forEach(sub => {
+                    const opt = document.createElement("option");
+                    opt.value = sub;
+                    opt.textContent = sub;
+                    subSelect.appendChild(opt);
+                });
+            }
+            updateCategoryValue();
+        });
+
+        subSelect.addEventListener("change", updateCategoryValue);
+
+        function updateCategoryValue() {
+            const main = mainSelect.value;
+            const sub = subSelect.value;
+            categoryInput.value = main && sub ? `${main} > ${sub}` : "";
+            document.getElementById("previewCategory").textContent = categoryInput.value ? `หมวด: ${categoryInput.value}` : "";
+        }
+
+        // ====== เมื่อเลือก PDF ======
+        document.getElementById("pdf").addEventListener("change", async function () {
+            const file = this.files[0];
+            if (!file) return;
+
+            // ใส่ชื่อหนังสือ
+            const fileName = file.name.replace(/\.[^/.]+$/, "");
+            const titleInput = document.getElementById("title");
+            titleInput.value = fileName;
+            document.getElementById("previewTitle").textContent = fileName;
+
+            // แสดง PDF
+            const fileURL = URL.createObjectURL(file);
+            document.getElementById("pdfViewer").src = fileURL + "#toolbar=0";
+
+            // แสดงหน้าแรก PDF เป็นปก
+            const pdf = await pdfjsLib.getDocument(fileURL).promise;
+            const page = await pdf.getPage(1);
+
+            const canvas = document.createElement("canvas");
+            const context = canvas.getContext("2d");
+            const viewport = page.getViewport({ scale: 1.5 });
+
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            await page.render({ canvasContext: context, viewport }).promise;
+
+            canvas.toBlob(blob => {
+                const imageUrl = URL.createObjectURL(blob);
+                document.getElementById("coverPreview").src = imageUrl;
+            });
+
+            // แสดง preview
+            document.getElementById("preview").style.display = "block";
+        });
+    </script>
+
+</body>
+
+</html>

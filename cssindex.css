@@ -1,0 +1,228 @@
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      font-family: 'Noto Sans Thai', sans-serif;
+      background-image: url('https://i.postimg.cc/Jz2scBVD/fantastic-seascape-with-ripples.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+.logo-img {
+  max-width: 100%;
+  height: auto;
+}
+
+.logos-img {
+  max-width: 100%;
+  height: auto;
+}
+
+
+    /* Navbar */
+    .navbar-container {
+      width: 100%;
+    }
+
+    .navbar-top {
+      background-color: #e0b700;
+      height: 6px;
+    }
+
+    .navbar {
+      background-color: white;
+      color: black;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-bottom {
+      background-color: #000080;
+      height: 4px;
+    }
+
+    .navbar-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .navbar-left img {
+      height: 36px;
+      margin-right: 10px;
+    }
+
+    .navbar-left span {
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .navbar-right button {
+      background-color:rgb(1, 31, 138);
+      color: white;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .navbar-right button:hover {
+      background-color:rgb(6, 13, 91);
+    }
+
+.content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: calc(100vh - 120px); /* ลบความสูง navbar + footer โดยประมาณ */
+  padding: 20px;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+
+.login-container {
+  background: white;
+  padding: 30px;
+  border-radius: 15px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  max-width: 400px;
+  width: 100%;
+  margin: 0 auto; /* ตรงกลางแนวนอน */
+}
+
+
+    /* โลโก้และชื่อบนฟอร์ม */
+    .login-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 10px;
+      margin-top: -30px; 
+      margin-bottom: -60px; 
+    }
+
+    .login-header img {
+      height: 100px;
+      margin-bottom: 10px;
+    }
+
+  .login-header span {
+      font-size: 30px;
+      font-weight: bold;
+      color: #333;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 10px;
+      color: #333;
+      font-size: 20px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 10px 12px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      background-color:rgb(1, 31, 138);
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+      background-color:rgb(6, 13, 91);
+    }
+
+    .register-link {
+      text-align: center;
+      margin-top: 15px;
+    }
+
+    .register-link a {
+      color: #1e88e5;
+      text-decoration: none;
+      font-size: 15px;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+  width: 100%;
+  font-family: 'Noto Sans Thai', sans-serif;
+  margin-top: auto;
+}
+
+.footer-top,
+.footer-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px 10px;
+  text-align: center;
+}
+
+.footer-top {
+  background-color: #000080;
+  color: white;
+  font-size: 14px;
+  height: auto;
+}
+
+.footer-bottom {
+  background-color: #e0b700;
+  color: black;
+  font-size: 14px;
+  height: auto;
+}
+
+input::-ms-reveal,
+input::-webkit-credentials-auto-fill-button {
+  display: none;
+}
+
+input, select {
+  width: 100%;
+  padding: 8px;
+  box-sizing: border-box;
+}
+
+
+/* ปรับขนาดข้อความใน footer ให้เหมาะกับจอเล็ก */
+@media (max-width: 600px) {
+  .footer-top,
+  .footer-bottom {
+    font-size: 12px;
+    flex-direction: column;
+    padding: 8px;
+  }
+}

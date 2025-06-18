@@ -6,212 +6,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>สมัครสมาชิก | ห้องสมุดออนไลน์</title>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet" />
-  <style>
-    html,
-    body {
-      height: 100%;
-      margin: 0;
-      padding: 0;
-      font-family: 'Noto Sans Thai', sans-serif;
-      background-image: url('Picture/1.jpg');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .navbar-container {
-      width: 100%;
-    }
-
-    .navbar-top {
-      background-color: #e0b700;
-      height: 6px;
-    }
-
-    .navbar {
-      background-color: white;
-      color: black;
-      padding: 10px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .navbar-bottom {
-      background-color: #000080;
-      height: 4px;
-    }
-
-    .navbar-left {
-      display: flex;
-      align-items: center;
-    }
-
-    .navbar-left img {
-      height: 36px;
-      margin-right: 10px;
-    }
-
-    .navbar-left span {
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    .navbar-right button {
-      background-color: rgb(1, 31, 138);
-      color: white;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 13px;
-      cursor: pointer;
-    }
-
-    .navbar-right button:hover {
-      background-color: rgb(6, 13, 91);
-    }
-
-    .content {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 30px 15px;
-    }
-
-    .register-container {
-      background: rgba(255, 255, 255, 0.95);
-      padding: 20px 25px;
-      border-radius: 10px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.25);
-      width: 100%;
-      max-width: 700px;
-      box-sizing: border-box;
-    }
-
-    h2 {
-      text-align: center;
-      margin-bottom: 20px;
-      color: #333;
-      font-size: 20px;
-    }
-
-    form {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 15px;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-    }
-
-    label {
-      margin-bottom: 5px;
-      font-weight: bold;
-      font-size: 14px;
-    }
-
-    input[type="text"],
-    input[type="password"],
-    input[type="email"],
-    input[type="tel"],
-    select {
-      padding: 8px 10px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
-    }
-
-    .full-width {
-      grid-column: span 2;
-    }
-
-    button[type="submit"] {
-      width: 100%;
-      padding: 10px;
-      background-color: rgb(1, 31, 138);
-      color: white;
-      border: none;
-      border-radius: 6px;
-      font-size: 15px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
-
-    button[type="submit"]:hover {
-      background-color: rgb(6, 13, 91);
-    }
-
-    .login-link {
-      text-align: center;
-      margin-top: 15px;
-      font-size: 15px;
-    }
-
-    .login-link a {
-      color: #1e88e5;
-      text-decoration: none;
-    }
-
-    .login-link a:hover {
-      text-decoration: underline;
-    }
-
-    @media (max-width: 768px) {
-      form {
-        grid-template-columns: 1fr;
-      }
-
-      .full-width {
-        grid-column: span 1;
-      }
-    }
-
-    footer {
-      width: 100%;
-      font-family: 'Noto Sans Thai', sans-serif;
-      margin-top: auto;
-    }
-
-    .footer-top,
-    .footer-bottom {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 5px 10px;
-      text-align: center;
-    }
-
-    .footer-top {
-      background-color: #000080;
-      color: white;
-      font-size: 14px;
-      height: auto;
-    }
-
-    .footer-bottom {
-      background-color: #e0b700;
-      color: black;
-      font-size: 14px;
-      height: auto;
-    }
-
-    /* ปรับขนาดข้อความใน footer ให้เหมาะกับจอเล็ก */
-    @media (max-width: 600px) {
-
-      .footer-top,
-      .footer-bottom {
-        font-size: 12px;
-        flex-direction: column;
-        padding: 8px;
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="cssregister.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 
 <body>
@@ -221,7 +18,7 @@
     <div class="navbar-top"></div>
     <div class="navbar">
       <div class="navbar-left">
-        <img src="Picture/logo.png" alt="โลโก้" />
+        <img src="https://i.postimg.cc/XvS1jwB8/1.png" alt="โลโก้" />
         <span>โรงเรียนเสนาธิการทหารเรือ</span>
       </div>
       <div class="navbar-right">
@@ -235,7 +32,7 @@
   <div class="content">
     <div class="register-container">
       <h2>สมัครสมาชิก</h2>
-      <form action="index.html" method="GET">
+      <form action="index.html" method="GET" id="register-form">
         <div class="form-group">
           <label for="rank">ยศ</label>
           <select id="rank" name="rank" required>
@@ -280,17 +77,29 @@
 
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" required />
+          <div style="position: relative;">
+            <input type="password" id="password" name="password" required style="width: 93%;" />
+            <i id="togglePassword" class="fa-solid fa-eye"
+              style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+          </div>
         </div>
 
         <div class="form-group">
           <label for="course">หลักสูตร</label>
-          <input type="text" id="course" name="course" required />
+          <select id="course" name="course" required>
+            <option value="">-- กรุณาเลือกหลักสูตร --</option>
+            <option value="หลักสูตรอาวุโส">หลักสูตรอาวุโส</option>
+            <option value="หลักสูตรเสนาธิการทหารเรือ">หลักสูตรเสนาธิการทหารเรือ</option>
+          </select>
         </div>
 
         <div class="form-group">
-          <label for="email">Email</label>
-          <input type="email" id="email" name="email" required />
+          <label for="confirmPassword">ยืนยันรหัสผ่าน</label>
+          <div style="position: relative;">
+            <input type="password" id="confirmPassword" name="confirmPassword" required style="width: 93%;" />
+            <i id="toggleCPassword" class="fa-solid fa-eye"
+              style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); cursor: pointer;"></i>
+          </div>
         </div>
 
         <div class="form-group full-width">
@@ -313,6 +122,62 @@
       <span>หากประสบปัญหาโปรดติดต่อ : น.อ.ศักดิ์สิทธิ์ เตชะพงศ์ประเสริฐ โทร. 089-893-8805</span>
     </div>
   </footer>
+
+  <script>
+    const supabase = supabase.createClient(
+      'https://nceyapolnyhwzgssfson.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jZXlhcG9sbnlod3pnc3Nmc29uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5MjAwMjUsImV4cCI6MjA2NTQ5NjAyNX0.pCB24tf7CoLoHBGm4opDFk-n43Kc1n16PRgiMYHh8fo'
+    );
+
+    document.getElementById('register-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      const rank = document.getElementById('rank').value;
+      const fullname = document.getElementById('fullname').value;
+      const phone = document.getElementById('phone').value;
+      const student_id = document.getElementById('student_id').value;
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const course = document.getElementById('course').value;
+
+      if (password !== confirmPassword) {
+        alert("❌ รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน");
+        return;
+      }
+
+      // ✅ ตรวจซ้ำ username
+      const { data: existingUser, error: checkError } = await supabase
+        .from('profiles')
+        .select('username')
+        .eq('username', username)
+        .single();
+
+      if (existingUser) {
+        alert('❌ มี Username นี้อยู่ในระบบแล้ว');
+        return;
+      }
+
+      // ✅ insert ข้อมูลผู้ใช้ใหม่
+      const { error: insertError } = await supabase.from('profiles').insert([{
+        username,
+        password,
+        rank,
+        fullname,
+        phone,
+        student_id,
+        course
+      }]);
+
+      if (insertError) {
+        alert('❌ สมัครไม่สำเร็จ: ' + insertError.message);
+      } else {
+        alert('✅ สมัครสมาชิกสำเร็จ!');
+        window.location.href = 'index.html'; // หรือ home.html ถ้า login auto
+      }
+    });
+  </script>
+
 </body>
 
 </html>
