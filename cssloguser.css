@@ -203,6 +203,75 @@
       font-size: 14px;
       height: auto;
     }
+    .table-container {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 16px;
+  background: #ffffffc2;
+  max-width: 100%;
+  overflow-x: auto;
+  margin: 1rem 0;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+}
+
+/* จัดแนวของส่วนควบคุม DataTable */
+.dataTables_wrapper {
+  font-family: 'Noto Sans Thai', sans-serif;
+}
+
+.dataTables_length,
+.dataTables_filter,
+.dataTables_info,
+.dataTables_paginate {
+  margin: 0.5rem 0;
+}
+
+.dataTables_length,
+.dataTables_filter {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.dataTables_filter {
+  float: right;
+}
+
+.dataTables_paginate {
+  float: right;
+}
+.top-container,
+.bottom-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.left-search {
+  order: 1;
+}
+
+.right-length {
+  order: 2;
+}
+
+.left-paging {
+  order: 1;
+}
+
+.right-info {
+  order: 2;
+  text-align: right;
+}
+
+.table-container {
+  max-width: 95%;
+  margin: 0 auto;
+}
+
 
     /* ปรับขนาดข้อความใน footer ให้เหมาะกับจอเล็ก */
     @media (max-width: 600px) {

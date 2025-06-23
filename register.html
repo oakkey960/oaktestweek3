@@ -8,7 +8,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="cssregister.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 
 <body>
@@ -123,11 +122,12 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
-    const supabase = supabase.createClient(
-      'https://nceyapolnyhwzgssfson.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jZXlhcG9sbnlod3pnc3Nmc29uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5MjAwMjUsImV4cCI6MjA2NTQ5NjAyNX0.pCB24tf7CoLoHBGm4opDFk-n43Kc1n16PRgiMYHh8fo'
-    );
+    const SUPABASE_URL = 'https://nceyapolnyhwzgssfson.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jZXlhcG9sbnlod3pnc3Nmc29uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5MjAwMjUsImV4cCI6MjA2NTQ5NjAyNX0.pCB24tf7CoLoHBGm4opDFk-n43Kc1n16PRgiMYHh8fo';
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); // ✅ ใช้แบบนี้
 
     document.getElementById('register-form').addEventListener('submit', async (e) => {
       e.preventDefault();
@@ -142,11 +142,11 @@
       const course = document.getElementById('course').value;
 
       if (password !== confirmPassword) {
-        alert("❌ รหัสผ่านและยืนยันรหัสผ่านไม่ตรงกัน");
+        alert("❌ รหัสผ่านไม่ตรงกัน");
         return;
       }
 
-      // ✅ ตรวจซ้ำ username
+      // ✅ ตรวจ username ซ้ำ
       const { data: existingUser, error: checkError } = await supabase
         .from('profiles')
         .select('username')
@@ -154,11 +154,11 @@
         .single();
 
       if (existingUser) {
-        alert('❌ มี Username นี้อยู่ในระบบแล้ว');
+        alert('❌ มี Username นี้อยู่แล้ว');
         return;
       }
 
-      // ✅ insert ข้อมูลผู้ใช้ใหม่
+      // ✅ Insert ข้อมูล
       const { error: insertError } = await supabase.from('profiles').insert([{
         username,
         password,
@@ -173,9 +173,26 @@
         alert('❌ สมัครไม่สำเร็จ: ' + insertError.message);
       } else {
         alert('✅ สมัครสมาชิกสำเร็จ!');
-        window.location.href = 'index.html'; // หรือ home.html ถ้า login auto
+        window.location.href = 'index.html';
       }
     });
+
+    document.getElementById('togglePassword').addEventListener('click', function () {
+      const passwordInput = document.getElementById('password');
+      const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      passwordInput.setAttribute('type', type);
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+    });
+
+    document.getElementById('toggleCPassword').addEventListener('click', function () {
+      const cpasswordInput = document.getElementById('confirmPassword');
+      const type = cpasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+      cpasswordInput.setAttribute('type', type);
+      this.classList.toggle('fa-eye');
+      this.classList.toggle('fa-eye-slash');
+    });
+
   </script>
 
 </body>

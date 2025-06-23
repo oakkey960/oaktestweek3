@@ -8,13 +8,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet" />
   <link href="cssindex.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-
 </head>
 
 <body>
 
-  <!-- Navbar -->
   <div class="navbar-container">
     <div class="navbar-top"></div>
     <div class="navbar">
@@ -27,11 +24,9 @@
     </div>
   </div>
 
-  <!-- เนื้อหา -->
   <div class="content">
     <div class="login-container">
       <div>
-        <!-- โลโก้และชื่อบนฟอร์ม -->
         <br>
         <div class="login-header">
           <img src="https://i.postimg.cc/XvS1jwB8/1.png" alt="โลโก้main" class="logos-img" />
@@ -41,9 +36,9 @@
         <br>
         <br>
         <h2>เข้าสู่ระบบ</h2>
-        <form id="login-form"> <!-- <form action="home.html" method="GET"> -->
+        <form id="login-form">
           <label for="student_id">Username</label>
-          <input type="text" id="student_id" name="student_id" required />
+          <input type="text" id="username" name="username" required />
 
           <label for="Password">ยืนยันรหัสผ่าน</label>
           <div style="position: relative;">
@@ -63,7 +58,6 @@
     </div>
   </div>
 
-  <!-- Footer -->
   <footer>
     <div class="footer-top">
       <span>© 2025 โรงเรียนเสนาธิการทหารเรือ</span>
@@ -73,61 +67,53 @@
     </div>
   </footer>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
-  <!-- เพิ่มก่อน </body> -->
   <script>
     const SUPABASE_URL = 'https://nceyapolnyhwzgssfson.supabase.co';
     const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jZXlhcG9sbnlod3pnc3Nmc29uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5MjAwMjUsImV4cCI6MjA2NTQ5NjAyNX0.pCB24tf7CoLoHBGm4opDFk-n43Kc1n16PRgiMYHh8fo';
-    const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); // ✅ ใช้แบบนี้
 
     document.getElementById('login-form').addEventListener('submit', async function (event) {
       event.preventDefault();
 
-      const enteredUsername = document.getElementById('student_id').value;
+      const enteredUsername = document.getElementById('username').value;
       const enteredPassword = document.getElementById('password').value;
 
-      // 👉 เคสแอดมิน (hardcoded)
+      // 👉 เคสแอดมิน
       if (enteredUsername === 'admin' && enteredPassword === '1234') {
-        localStorage.setItem('currentUser', 'admin');
-
-        // เก็บ log ลง Supabase
-        await supabase.from('login_logs').insert([{
-          user: 'admin',
-          time: new Date().toISOString()
-        }]);
-
-        window.location.href = 'home.html'; // home.html จะแสดงเมนู admin เพิ่ม
+        localStorage.setItem("currentUser", JSON.stringify({
+          username: "admin",
+          fullname: "ผู้ดูแลระบบ"
+        }));
+        window.location.href = 'home.html';
         return;
       }
 
-      // 👉 ผู้ใช้ทั่วไป (login ผ่าน Supabase)
-      const email = enteredUsername + '@example.com'; // เราใช้ username เป็น email แบบปลอม
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: email,
-        password: enteredPassword
-      });
+      // ✅ ดึงข้อมูลผู้ใช้จาก Supabase
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('username', enteredUsername)
+        .eq('password', enteredPassword)
+        .single();
 
-      if (error) {
+      if (error || !data) {
         alert('❌ ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง');
         return;
       }
 
-      // ดึง profile ของผู้ใช้มาเก็บใน localStorage
-      const { data: profileData } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', data.user.id)
-        .single();
+      // ✅ บันทึกข้อมูลผู้ใช้ลง localStorage
+      localStorage.setItem('currentUser', JSON.stringify(data));
 
-      localStorage.setItem('currentUser', JSON.stringify(profileData));
-
-      // เก็บ log ลง Supabase
+      // ✅ เก็บ log
       await supabase.from('login_logs').insert([{
-        user: enteredUsername,
-        time: new Date().toISOString()
+        user_id: data.id,
+        login_at: new Date().toISOString()
       }]);
 
-      window.location.href = 'home.html'; // ไปหน้า home ปกติ
+
+      window.location.href = 'home.html';
     });
 
     // toggle password

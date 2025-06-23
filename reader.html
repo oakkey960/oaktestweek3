@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>อ่านหนังสือ</title>
+    <style>
+        body,
+        html {
+            margin: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+    </style>
+</head>
+
+<body>
+    <iframe id="pdf-frame"></iframe>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const pdfUrl = urlParams.get('file');
+
+        if (!pdfUrl) {
+            alert("ไม่พบไฟล์ PDF");
+        } else {
+            // ซ่อนไม่ให้โหลดโดยใช้ sandbox และปิด context menu
+            const iframe = document.getElementById("pdf-frame");
+            iframe.src = decodeURIComponent(pdfUrl) + "#toolbar=0&navpanes=0&scrollbar=0";
+        }
+
+        // ปิดคลิกขวา
+        window.addEventListener('contextmenu', e => e.preventDefault());
+    </script>
+</body>
+
+</html>

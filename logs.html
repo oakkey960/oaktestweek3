@@ -8,6 +8,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
   <link rel="stylesheet" href="cssloguser.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+
   <script>
     // ป้องกันการเข้าหน้าโดยไม่ได้ login
     const currentUser = localStorage.getItem('currentUser');
@@ -47,31 +49,33 @@
 
 
 
-  <h2>📜 ประวัติการ Login</h2>
-  <table id="login-log-table">
-    <thead>
-      <tr>
-        <th>ลำดับ</th>
-        <th>ชื่อผู้ใช้</th>
-        <th>เวลา</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  <div class="table-container">
+    <h2>📜 ประวัติการ Login</h2>
+    <table id="login-log-table" class="display">
+      <thead>
+        <tr>
+          <th>ลำดับ</th>
+          <th>ชื่อผู้ใช้</th>
+          <th>เวลา</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
 
-  <h2>📚 ประวัติการอ่านหนังสือ</h2>
-  <table id="read-log-table">
-    <thead>
-      <tr>
-        <th>ลำดับ</th>
-        <th>ชื่อผู้ใช้</th>
-        <th>หนังสือ</th>
-        <th>เวลา</th>
-        <th>อ่านต่อ</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+    <h2>📚 ประวัติการอ่านหนังสือ</h2>
+    <table id="read-log-table" class="display">
+      <thead>
+        <tr>
+          <th>ลำดับ</th>
+          <th>ชื่อผู้ใช้</th>
+          <th>หนังสือ</th>
+          <th>เวลา</th>
+          <th>อ่านต่อ</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
 
   <!-- Footer -->
   <footer>
@@ -83,57 +87,140 @@
     </div>
   </footer>
 
+  <!-- ✅ JS Section -->
+  <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
-    // Log การ Login
-    const loginLogs = JSON.parse(localStorage.getItem('loginLogs') || '[]');
-    const loginTable = document.querySelector('#login-log-table tbody');
-    loginLogs.forEach((log, index) => {
-      const row = `<tr>
-            <td>${index + 1}</td>
-            <td>${log.user}</td>
-            <td>${new Date(log.time).toLocaleString()}</td>
-          </tr>`;
-      loginTable.innerHTML += row;
-    });
+    const SUPABASE_URL = 'https://nceyapolnyhwzgssfson.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jZXlhcG9sbnlod3pnc3Nmc29uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5MjAwMjUsImV4cCI6MjA2NTQ5NjAyNX0.pCB24tf7CoLoHBGm4opDFk-n43Kc1n16PRgiMYHh8fo';
+    const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    // Log การอ่านหนังสือ
-    const readLogs = JSON.parse(localStorage.getItem('readLogs') || '[]');
-    const readTable = document.querySelector('#read-log-table tbody');
-    readLogs.forEach((log, index) => {
-      const dateObj = new Date(log.time);
+    const userData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+    document.getElementById('hamburgerUser').textContent =
+      userData.fullname || userData.username || 'ผู้ใช้';
 
-      const shortDate = dateObj.toLocaleDateString('en-GB', {
-        day: '2-digit',
-        month: '2-digit',
-        year: '2-digit'
-      });
+    async function loadLogs() {
+      // ดึงข้อมูล bookMap ก่อน
+      const { data: books } = await client.from('books').select('title, pdf_url');
+      const bookMap = {};
+      books.forEach(b => bookMap[b.title] = b.pdf_url);
 
-      const shortTime = dateObj.toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-      });
+      // เช็คว่าเป็น admin หรือไม่
+      if (userData.username === 'admin') {
+        // ✅ login log
+        const { data: loginLogs } = await client
+          .from('login_logs')
+          .select('*, profiles(fullname)')
+          .order('login_at', { ascending: false });
 
-      const row = `<tr>
-    <td>${index + 1}</td>
-    <td>${log.user}</td>
-    <td>${log.book}</td>
-    <td>${shortDate}<br>${shortTime}</td>
-    <td>
-      <a href="${log.url}" target="_blank">
-        <button class="read-btn" title="อ่านต่อ">
-          <i class="bi bi-book" style="font-size: 1.2rem;"></i>
-        </button>
-      </a>
-    </td>
-  </tr>`;
-      readTable.innerHTML += row;
-    });
+        let loginHTML = '';
+        loginLogs.forEach((log, index) => {
+          loginHTML += `
+    <tr>
+      <td>${index + 1}</td>
+      <td>${log.profiles.fullname}</td>
+      <td>${new Date(log.login_at).toLocaleString()}</td>
+    </tr>`;
+        });
+        document.querySelector('#login-log-table tbody').innerHTML = loginHTML;
 
-  </script>
+        if ($.fn.DataTable.isDataTable('#login-log-table')) {
+          $('#login-log-table').DataTable().destroy();
+        }
+        $('#login-log-table').DataTable({
+          pageLength: 10,
+          language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/th.json'
+          },
+          dom: '<"top-container"<"left-search"f><"right-length"l>>rt<"bottom-container"<"left-paging"p><"right-info"i>>'
+        });
 
-  <!-- dropdown -->
-  <script>
+
+
+        // ✅ read log
+        const { data: readLogs } = await client
+          .from('book_reads')
+          .select('*, profiles(fullname)')
+          .order('read_at', { ascending: false });
+
+        let readHTML = '';
+        readLogs.forEach((log, index) => {
+          const dateObj = new Date(log.read_at);
+          const shortDate = dateObj.toLocaleDateString('en-GB');
+          const shortTime = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+          readHTML += `
+    <tr>
+      <td>${index + 1}</td>
+      <td>${log.profiles.fullname}</td>
+      <td>${log.book_title}</td>
+      <td>${shortDate}<br>${shortTime}</td>
+      <td>
+        <a href="reader.html?file=${encodeURIComponent(bookMap[log.book_title])}" target="_blank">
+          <button class="read-btn" title="อ่านต่อ">
+            <i class="bi bi-book" style="font-size: 1.2rem;"></i>
+          </button>
+        </a>
+      </td>
+    </tr>`;
+        });
+        document.querySelector('#read-log-table tbody').innerHTML = readHTML;
+
+        if ($.fn.DataTable.isDataTable('#read-log-table')) {
+          $('#read-log-table').DataTable().destroy();
+        }
+        $('#read-log-table').DataTable({
+          pageLength: 10,
+          language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/th.json'
+          },
+          dom: '<"top-container"<"left-search"f><"right-length"l>>rt<"bottom-container"<"left-paging"p><"right-info"i>>'
+        });
+
+
+
+
+      } else {
+        // 🔒 ถ้าไม่ใช่ admin ดึงเฉพาะของตัวเอง
+        document.querySelector('h2').style.display = 'none';
+        document.getElementById('login-log-table').style.display = 'none';
+
+        const { data: myReads } = await client
+          .from('book_reads')
+          .select('*')
+          .eq('user_id', userData.id)
+          .order('read_at', { ascending: false });
+
+        const readTable = document.querySelector('#read-log-table tbody');
+        myReads.forEach((log, index) => {
+          const dateObj = new Date(log.read_at);
+          const shortDate = dateObj.toLocaleDateString('en-GB');
+          const shortTime = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+
+          const row = `
+      <tr>
+        <td>${index + 1}</td>
+        <td>${userData.username}</td>
+        <td>${log.book_title}</td>
+        <td>${shortDate}<br>${shortTime}</td>
+        <td>
+            <a href="reader.html?file=${encodeURIComponent(bookMap[log.book_title])}" target="_blank">
+            <button class="read-btn" title="อ่านต่อ">
+              <i class="bi bi-book" style="font-size: 1.2rem;"></i>
+            </button>
+          </a>
+        </td>
+      </tr>`;
+          readTable.innerHTML += row;
+        });
+      }
+    }
+
+
+    // เรียกตอนโหลดหน้า
+    loadLogs();
+
     function toggleHamburgerMenu() {
       const menu = document.getElementById('hamburgerDropdown');
       menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
@@ -144,10 +231,8 @@
       window.location.href = 'index.html';
     }
 
-    // แสดงชื่อผู้ใช้
-    document.getElementById('hamburgerUser').textContent =
-      localStorage.getItem('currentUser') || 'ผู้ใช้';
   </script>
+
 </body>
 
 </html>

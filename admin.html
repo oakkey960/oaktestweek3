@@ -15,6 +15,29 @@
 </head>
 
 <body>
+    <!-- ✅ Navbar -->
+    <div class="navbar-container">
+        <div class="navbar-top"></div>
+        <div class="navbar">
+            <div class="navbar-left">
+                <a href="home.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+                    <img src="https://i.postimg.cc/XvS1jwB8/1.png" alt="โลโก้" />
+                    <span>โรงเรียนเสนาธิการทหารเรือ</span>
+                </a>
+            </div>
+            <div class="hamburger-menu">
+                <button class="hamburger-icon" id="hamburgerToggle">☰</button>
+                <div id="hamburgerDropdown" class="hamburger-dropdown">
+                    <div class="hamburger-user">👤 <span id="hamburgerUser">Admin</span></div>
+                    <a href="logs.html">📚 ประวัติการอ่าน</a>
+                    <a href="index.html" onclick="logout()">🚪 ออกจากระบบ</a>
+                    <a href="books_admin_view.html" onclick="logout()">🛠 จัดการหนังสือ</a>
+                </div>
+            </div>
+        </div>
+        <div class="navbar-bottom"></div>
+    </div>
+
     <h2>📘 เพิ่มหนังสือใหม่</h2>
 
     <div class="container">
@@ -52,81 +75,41 @@
         <div class="preview-section">
             <div id="preview" style="display: none;">
                 <h3>ตัวอย่างหนังสือ</h3>
-                <img id="coverPreview" src="" alt="ปกหนังสือ">
-                <br>
                 <strong id="previewTitle"></strong><br>
                 <span id="previewCategory"></span><br><br>
+                <img id="coverPreview" src="" alt="ปกหนังสือ">
+                <br>
                 <iframe id="pdfViewer" frameborder="0"></iframe>
             </div>
         </div>
     </div>
 
-
+    <footer>
+        <div class="footer-top">
+            <span>© 2025 โรงเรียนเสนาธิการทหารเรือ</span>
+        </div>
+        <div class="footer-bottom">
+            <span>หากประสบปัญหาโปรดติดต่อ : น.อ.ศักดิ์สิทธิ์ เตชะพงศ์ประเสริฐ โทร. 089-893-8805</span>
+        </div>
+    </footer>
 
     <!-- ✅ Supabase และการเชื่อมต่อ -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <script>
-        const { createClient } = supabase;
-        const supabaseClient = createClient(
+    <script type="module">
+        import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm";
+
+        const supabase = createClient(
             "https://nceyapolnyhwzgssfson.supabase.co",
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jZXlhcG9sbnlod3pnc3Nmc29uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5MjAwMjUsImV4cCI6MjA2NTQ5NjAyNX0.pCB24tf7CoLoHBGm4opDFk-n43Kc1n16PRgiMYHh8fo"
         );
-        console.log(supabase);
 
-        document.getElementById("uploadForm").addEventListener("submit", async function (e) {
-            e.preventDefault();
-
-            const title = document.getElementById("title").value;
-            const mainCategory = document.getElementById("mainCategory").value;
-            const subCategory = document.getElementById("subCategory").value;
-            const pdfFile = document.getElementById("pdf").files[0];
-
-            if (!title || !mainCategory || !subCategory || !pdfFile) {
-                alert("กรุณากรอกข้อมูลให้ครบถ้วน");
-                return;
-            }
-
-            try {
-                // 🔺 อัปโหลด PDF ไปยัง Supabase Storage
-                const filename = `${Date.now()}_${pdfFile.name}`;
-                const { data: uploadData, error: uploadError } = await supabase.storage
-                    .from("books")
-                    .upload(`pdfs/${filename}`, pdfFile);
-
-                if (uploadError) throw uploadError;
-
-                // 🔺 เอา URL สำหรับเข้าถึงไฟล์ PDF
-                const { data: publicUrlData } = supabase.storage
-                    .from("books")
-                    .getPublicUrl(`pdfs/${filename}`);
-
-                const pdf_url = publicUrlData.publicUrl;
-
-                // 🔺 เพิ่มข้อมูลลงใน Supabase Table books
-                const { error: insertError } = await supabase.from("books").insert([
-                    {
-                        title,
-                        category_main: mainCategory,
-                        category_sub: subCategory,
-                        pdf_url: pdf_url
-                    }
-                ]);
-
-                if (insertError) throw insertError;
-                alert("📚 อัปโหลดและบันทึกข้อมูลสำเร็จ!");
-                this.reset();
-                document.getElementById("preview").style.display = "none";
-            } catch (err) {
-                console.error(err);
-                alert("❌ เกิดข้อผิดพลาด: " + err.message);
-            }
-        });
-
-        // ====== หมวดหลักและย่อย ======
         const subCategories = {
             "หมวดวิชาผู้นำและการบริหาร": ["ผู้นำทางทหาร", "การบริหารองค์กรภาครัฐ"],
-            "หมวดวิชาความมั่นคงและยุทธศาสตร์": ["ความสัมพันธ์ระหว่างประเทศและเศรษฐกิจการเมือง",
-                "หลักยุทธศาสตร์และความมั่นคงทางทะเลของไทย", "ยุทธศาสตร์และนโยบาย"],
+            "หมวดวิชาความมั่นคงและยุทธศาสตร์": [
+                "ความสัมพันธ์ระหว่างประเทศและเศรษฐกิจการเมือง",
+                "หลักยุทธศาสตร์และความมั่นคงทางทะเลของไทย",
+                "ยุทธศาสตร์และนโยบาย"
+            ],
             "หมวดวิชาเสนาธิการกิจ": ["การเรียบเรียงและการบรรยาย", "การจัดและหน้าที่ฝ่ายเสนาธิการ/อำนวยการ"],
             "หมวดวิชาปฏิบัติการทางทหาร": ["การปฏิบัติการทางทหาร", "กฎหมายทางทหาร"],
             "หมวดวิชาสังคม": ["สังคม", "กิจกรรมและการบรรยายพิเศษ", "ดูกิจการและศึกษาภูมิประเทศ"]
@@ -156,25 +139,26 @@
             const main = mainSelect.value;
             const sub = subSelect.value;
             categoryInput.value = main && sub ? `${main} > ${sub}` : "";
-            document.getElementById("previewCategory").textContent = categoryInput.value ? `หมวด: ${categoryInput.value}` : "";
+            document.getElementById("previewCategory").textContent =
+                categoryInput.value ? `หมวด: ${categoryInput.value}` : "";
         }
 
-        // ====== เมื่อเลือก PDF ======
         document.getElementById("pdf").addEventListener("change", async function () {
             const file = this.files[0];
             if (!file) return;
 
-            // ใส่ชื่อหนังสือ
+            document.getElementById("title").addEventListener("input", function () {
+                document.getElementById("previewTitle").textContent = this.value;
+            });
+
             const fileName = file.name.replace(/\.[^/.]+$/, "");
             const titleInput = document.getElementById("title");
             titleInput.value = fileName;
             document.getElementById("previewTitle").textContent = fileName;
 
-            // แสดง PDF
             const fileURL = URL.createObjectURL(file);
             document.getElementById("pdfViewer").src = fileURL + "#toolbar=0";
 
-            // แสดงหน้าแรก PDF เป็นปก
             const pdf = await pdfjsLib.getDocument(fileURL).promise;
             const page = await pdf.getPage(1);
 
@@ -191,11 +175,71 @@
                 document.getElementById("coverPreview").src = imageUrl;
             });
 
-            // แสดง preview
             document.getElementById("preview").style.display = "block";
         });
-    </script>
 
+        document.getElementById("uploadForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const title = document.getElementById("title").value;
+            const mainCategory = document.getElementById("mainCategory").value;
+            const subCategory = document.getElementById("subCategory").value;
+            const pdfFile = document.getElementById("pdf").files[0];
+
+            if (!title || !mainCategory || !subCategory || !pdfFile) {
+                alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+                return;
+            }
+
+            try {
+                const filename = `${Date.now()}_${pdfFile.name}`;
+
+                // 🔺 อัปโหลด PDF ไปยัง Supabase Storage
+                const { data: uploadData, error: uploadError } = await supabase.storage
+                    .from("books")
+                    .upload(`pdfs/${filename}`, pdfFile, { upsert: true });
+
+                if (uploadError) throw uploadError;
+
+                // 🔺 สร้าง public URL สำหรับไฟล์
+                const { data: publicUrlData } = supabase.storage
+                    .from("books")
+                    .getPublicUrl(`pdfs/${filename}`);
+
+                const pdf_url = publicUrlData.publicUrl;
+
+                // 🔺 เพิ่มข้อมูลหนังสือในตาราง books
+                const { error: insertError } = await supabase.from("books").insert([
+                    {
+                        title,
+                        category_main: mainCategory,
+                        category_sub: subCategory,
+                        pdf_url: pdf_url
+                    }
+                ]);
+
+                if (insertError) throw insertError;
+
+                alert("📚 อัปโหลดและบันทึกข้อมูลสำเร็จ!");
+                this.reset();
+                document.getElementById("preview").style.display = "none";
+
+            } catch (err) {
+                console.error(err);
+                alert("❌ เกิดข้อผิดพลาด: " + err.message);
+            }
+
+        });
+        document.getElementById("hamburgerToggle").addEventListener("click", function (e) {
+            e.stopPropagation();
+            document.getElementById("hamburgerDropdown").classList.toggle("show");
+        });
+
+        // ปิด dropdown ถ้าคลิกข้างนอก
+        document.addEventListener("click", function () {
+            document.getElementById("hamburgerDropdown").classList.remove("show");
+        });
+    </script>
 </body>
 
 </html>

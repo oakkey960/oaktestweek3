@@ -8,81 +8,278 @@
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai&display=swap" rel="stylesheet">
   <link href="csshome.css" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 </head>
 
 <body>
-  <!-- 🍔 Navbar -->
-  <nav class="navbar">
-    <span class="logo">📚 ระบบห้องสมุด</span>
-    <div class="menu" id="hamburgerMenu">
-      <a href="home.html">หน้าแรก</a>
-      <a href="logs.html">ประวัติการใช้งาน</a>
-      <!-- ลิงก์ admin จะเพิ่มด้วย JS ถ้า user เป็น admin -->
+  <!-- ✅ Navbar -->
+  <div class="navbar-container">
+    <div class="navbar-top"></div>
+    <div class="navbar">
+      <div class="navbar-left">
+        <a href="home.html" style="display: flex; align-items: center; text-decoration: none; color: inherit;">
+          <img src="https://i.postimg.cc/XvS1jwB8/1.png" alt="โลโก้" />
+          <span>โรงเรียนเสนาธิการทหารเรือ</span>
+        </a>
+      </div>
+      <div class="hamburger-menu">
+        <button class="hamburger-icon" id="hamburgerToggle">☰</button>
+        <div id="hamburgerDropdown" class="hamburger-dropdown">
+          <div class="hamburger-user">👤 <span id="hamburgerUser">ผู้ใช้</span></div>
+          <a href="logs.html">📚 ประวัติการอ่าน</a>
+          <a href="index.html" onclick="logout()">🚪 ออกจากระบบ</a>
+        </div>
+      </div>
     </div>
-  </nav>
+    <div class="navbar-bottom"></div>
+  </div>
 
+  <!-- ✅ Header -->
   <main>
+    <div class="login-header">
+      <span>ห้องสมุดโรงเรียนเสนาธิการทหารเรือ</span>
+    </div>
+
+    <!-- ✅ Filter Controls -->
+    <div class="nav-controls">
+      <div class="dropdown">
+        <div class="dropdown-toggle" id="dropdownToggle">เลือกหมวดหนังสือ ▾</div>
+        <div class="dropdown-list" id="dropdownMenu"></div>
+      </div>
+      <input type="text" id="searchInput" class="custom-input" placeholder="ค้นหาหนังสือ...">
+    </div>
+
+    <!-- ✅ Book Section -->
     <h2>📘 หนังสือทั้งหมด</h2>
     <div id="bookContainer" class="book-grid"></div>
   </main>
 
+  <footer>
+    <div class="footer-top">
+      <span>© 2025 โรงเรียนเสนาธิการทหารเรือ</span>
+    </div>
+    <div class="footer-bottom">
+      <span>หากประสบปัญหาโปรดติดต่อ : น.อ.ศักดิ์สิทธิ์ เตชะพงศ์ประเสริฐ โทร. 089-893-8805</span>
+    </div>
+  </footer>
+
+  <!-- ✅ JS Section -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
-    const supabaseUrl = "https://nceyapolnyhwzgssfson.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-    const adminId = "admin-user-id"; // 🛠 เปลี่ยนเป็น ID จริงของ admin
+    document.addEventListener("DOMContentLoaded", () => {
+      const SUPABASE_URL = 'https://nceyapolnyhwzgssfson.supabase.co';
+      const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5jZXlhcG9sbnlod3pnc3Nmc29uIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk5MjAwMjUsImV4cCI6MjA2NTQ5NjAyNX0.pCB24tf7CoLoHBGm4opDFk-n43Kc1n16PRgiMYHh8fo';
+      const client = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-    async function loadUserAndBooks() {
-      const { data: { user } } = await supabase.auth.getUser();
+      const subjects = {
+        "หมวดวิชาผู้นำและการบริหาร": ["- ผู้นำทางทหาร", "- การบริหารองค์กรภาครัฐ"],
+        "หมวดวิชาความมั่นคงและยุทธศาสตร์": ["- ความสัมพันธ์ระหว่างประเทศและเศรษฐกิจการเมือง", "- หลักยุทธศาสตร์และความมั่นคงทางทะเลของไทย", "- ยุทธศาสตร์และนโยบาย"],
+        "หมวดวิชาเสนาธิการกิจ": ["- การเรียบเรียงและการบรรยาย", "- การจัดและหน้าที่ฝ่ายเสนาธิการ/อำนวยการ"],
+        "หมวดวิชาปฏิบัติการทางทหาร": ["- การปฏิบัติการทางทหาร", "- กฎหมายทางทหาร"],
+        "หมวดวิชาสังคม": ["- สังคม", "- กิจกรรมและการบรรยายพิเศษ", "- ดูกิจการและศึกษาภูมิประเทศ"]
+      };
 
-      // ✅ ถ้าเป็น admin ให้แสดงลิงก์ไปหน้า admin
-      if (user && user.id === adminId) {
-        const adminLink = document.createElement("a");
-        adminLink.href = "admin.html";
-        adminLink.textContent = "จัดการหนังสือ";
-        document.getElementById("hamburgerMenu").appendChild(adminLink);
+      let currentCategory = "ทั้งหมด";
+
+      const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+      if (currentUser) {
+        document.getElementById('hamburgerUser').textContent = currentUser.fullname || currentUser.username;
+        if (currentUser.username === 'admin') {
+          const adminLink = document.createElement('a');
+          adminLink.href = 'books_admin_view.html';
+          adminLink.textContent = '🛠 จัดการหนังสือ';
+          document.getElementById('hamburgerDropdown').appendChild(adminLink);
+        }
       }
 
-      // ✅ ดึงหนังสือทั้งหมด
-      const { data: books, error } = await supabase.from("books").select("*");
-      if (error) {
-        console.error("เกิดข้อผิดพลาดในการโหลดหนังสือ", error);
-        return;
+      // ✅ Hamburger toggle
+      document.getElementById('hamburgerToggle').addEventListener('click', function (e) {
+        e.stopPropagation();
+        document.getElementById("hamburgerDropdown").classList.toggle("show");
+      });
+
+      // ✅ Dropdown toggle
+      document.getElementById('dropdownToggle').addEventListener('click', (e) => {
+        e.stopPropagation();
+        document.getElementById("dropdownMenu").classList.toggle("show");
+      });
+
+      // ✅ Close menus when click outside
+      document.addEventListener('click', (e) => {
+        const dropdown = document.getElementById("hamburgerDropdown");
+        const toggle = document.getElementById("hamburgerToggle");
+        if (!dropdown.contains(e.target) && e.target !== toggle) {
+          dropdown.classList.remove("show");
+        }
+
+        const menu = document.getElementById("dropdownMenu");
+        if (!menu.contains(e.target) && e.target.id !== "dropdownToggle") {
+          menu.classList.remove("show");
+          document.querySelectorAll(".submenu").forEach(m => m.style.display = "none");
+        }
+      });
+
+      // ✅ Logout
+      window.logout = () => localStorage.removeItem('currentUser');
+
+      // ✅ Create dropdown filter menu
+      function createDropdownMenu(subjects) {
+        const container = document.getElementById("dropdownMenu");
+        container.innerHTML = "";
+
+        const allItem = document.createElement("div");
+        allItem.className = "dropdown-item";
+        allItem.textContent = "ทั้งหมด";
+        allItem.onclick = () => {
+          currentCategory = "ทั้งหมด";
+          filterBooks(currentCategory);
+        };
+        container.appendChild(allItem);
+
+        for (const category in subjects) {
+          const wrapper = document.createElement("div");
+          wrapper.className = "dropdown-category";
+
+          const titleDiv = document.createElement("div");
+          titleDiv.className = "dropdown-item";
+          titleDiv.textContent = category;
+
+          const submenu = document.createElement("div");
+          submenu.className = "submenu";
+
+          subjects[category].forEach(sub => {
+            const subItem = document.createElement("div");
+            subItem.className = "submenu-item";
+            subItem.textContent = sub;
+            subItem.onclick = (e) => {
+              e.stopPropagation();
+              currentCategory = sub;
+              filterBooks(currentCategory);
+            };
+            submenu.appendChild(subItem);
+          });
+
+          titleDiv.onclick = (e) => {
+            e.stopPropagation();
+            const isVisible = submenu.style.display === 'flex';
+            document.querySelectorAll(".submenu").forEach(menu => {
+              if (menu !== submenu) menu.style.display = 'none';
+            });
+
+            submenu.style.display = isVisible ? 'none' : 'flex';
+            currentCategory = category;
+            filterBooks(currentCategory);
+          };
+
+          wrapper.appendChild(titleDiv);
+          wrapper.appendChild(submenu);
+          container.appendChild(wrapper);
+        }
       }
 
-      const container = document.getElementById("bookContainer");
+      // ✅ Filter books by category & search
+      function filterBooks(category) {
+        const input = document.getElementById("searchInput").value.toLowerCase().trim();
+        const cards = document.querySelectorAll(".book-card");
 
-      for (const book of books) {
-        const pdfBlob = await fetch(book.pdf_url).then(res => res.blob());
-        const pdfURL = URL.createObjectURL(pdfBlob);
+        const heading = document.querySelector("main h2");
+        heading.textContent = `📘 ${category}`;
 
-        // อ่านหน้าแรกเป็นรูปภาพ
-        const pdf = await pdfjsLib.getDocument(pdfURL).promise;
-        const page = await pdf.getPage(1);
-        const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
-        const viewport = page.getViewport({ scale: 1.5 });
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
+        cards.forEach(card => {
+          const title = card.querySelector("h3").innerText.toLowerCase();
+          const p = card.querySelector("p");
+          const main = p.getAttribute("data-main")?.toLowerCase() || "";
+          const sub = p.getAttribute("data-sub")?.toLowerCase() || "";
 
-        await page.render({ canvasContext: context, viewport }).promise;
-        const coverImage = canvas.toDataURL();
+          const matchesText = title.includes(input) || main.includes(input) || sub.includes(input);
 
-        // สร้าง book card
-        const card = document.createElement("div");
-        card.className = "book-card";
-        card.innerHTML = `
-          <img src="${coverImage}" alt="ปกหนังสือ" />
-          <h3>${book.title}</h3>
-          <p>${book.category_main} > ${book.category_sub}</p>
-          <a href="${book.pdf_url}" target="_blank">📖 อ่านหนังสือ</a>
-        `;
-        container.appendChild(card);
+          let matchesCategory = false;
+
+          if (category === "ทั้งหมด") {
+            matchesCategory = true;
+          } else if (subjects.hasOwnProperty(category)) {
+            // ถ้าเป็นหมวดหลัก: เช็ค sub category
+            const subs = subjects[category].map(s => s.replace(/^- /, "").toLowerCase());
+            matchesCategory = subs.includes(sub);
+          } else {
+            // เป็นหมวดย่อย
+            matchesCategory = sub === category.toLowerCase().replace(/^- /, "");
+          }
+
+          card.style.display = matchesText && matchesCategory ? "flex" : "none";
+        });
       }
-    }
 
-    loadUserAndBooks();
+
+
+      // ✅ Load books from Supabase and render
+      async function loadBooks() {
+        const { data: books, error } = await client.from("books").select("*");
+        if (error) {
+          console.error("โหลดหนังสือล้มเหลว:", error);
+          return;
+        }
+
+        const container = document.getElementById("bookContainer");
+        for (const book of books) {
+          // โหลด PDF ปก
+          const pdfBlob = await fetch(book.pdf_url).then(res => res.blob());
+          const pdfURL = URL.createObjectURL(pdfBlob);
+          const pdf = await pdfjsLib.getDocument(pdfURL).promise;
+          const page = await pdf.getPage(1);
+          const canvas = document.createElement("canvas");
+          const context = canvas.getContext("2d");
+          const viewport = page.getViewport({ scale: 1.5 });
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          await page.render({ canvasContext: context, viewport }).promise;
+
+          const coverImage = canvas.toDataURL();
+
+          // ✅ สร้างการ์ด
+          const card = document.createElement("div");
+          card.className = "book-card";
+          card.innerHTML = `
+  <img src="${coverImage}" alt="ปกหนังสือ ${book.title}" />
+  <h3>${book.title}</h3>
+  <p data-main="${book.category_main}" data-sub="${book.category_sub}">
+    ${book.category_main} ${book.category_sub}
+  </p>
+  <button class="read-button">📖 อ่านหนังสือ</button>
+`;
+
+
+          // ✅ ผูกฟังก์ชันหลัง DOM load แล้ว
+          const readButton = card.querySelector(".read-button");
+          readButton.addEventListener("click", async () => {
+            const fullPath = book.pdf_url; // ส่งทั้ง URL ไปเลย
+            window.open(`reader.html?file=${encodeURIComponent(fullPath)}`, '_blank');
+            if (fullPath) {
+              // ✅ ก่อนเปิด reader.html ให้เก็บ log ลง book_reads
+              const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+              if (currentUser && currentUser.id) {
+                const { error: readLogError } = await client.from('book_reads').insert([{
+                  user_id: currentUser.id,           // 🟢 ใช้ ID จริงจาก profiles
+                  book_title: book.title,
+                  read_at: new Date().toISOString()
+                }]);
+                if (readLogError) {
+                  console.error("❌ บันทึกการอ่านล้มเหลว:", readLogError);
+                }
+              }
+
+              // ✅ เปิด reader
+              window.open(`reader.html?file=${encodeURIComponent(fullPath)}`, '_blank');
+            } else {
+              alert("ไม่พบไฟล์ PDF");
+            }
+          });
+
+          container.appendChild(card);
+        }
+      }
+      createDropdownMenu(subjects);
+      loadBooks();
+    });
   </script>
 </body>
 
