@@ -98,12 +98,10 @@
     const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const userData = JSON.parse(localStorage.getItem('currentUser') || '{}');
-
-    // แสดงชื่อผู้ใช้ใน hamburger menu
     document.getElementById('hamburgerUser').textContent =
       userData.fullname || userData.username || 'ผู้ใช้';
 
-    // ตรวจสอบว่าเป็น admin หรือไม่
+
     if (userData.username === 'admin') {
       const adminLink = document.createElement('a');
       adminLink.href = 'books_admin_view.html';
