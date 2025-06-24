@@ -300,3 +300,68 @@
         padding: 10px;
       }
     }
+    /* Responsive เพิ่มเติมสำหรับจอเล็ก */
+@media (max-width: 768px) {
+  h2 {
+    font-size: 20px;
+    margin-top: 20px;
+  }
+
+
+
+
+  .table-container {
+    padding: 10px;
+  }
+
+  .top-container,
+  .bottom-container {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .dataTables_filter,
+  .dataTables_paginate {
+    float: none;
+    width: 100%;
+  }
+
+  .right-length,
+  .right-info {
+    text-align: left;
+    width: 100%;
+  }
+
+  table {
+    font-size: 14px;
+  }
+
+  .read-btn {
+    font-size: 12px;
+    padding: 4px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  h2 {
+    font-size: 18px;
+  }
+
+  th,
+  td {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+
+  .navbar-left span {
+    font-size: 16px;
+  }
+
+  .footer-top,
+  .footer-bottom {
+    font-size: 11px;
+    padding: 6px;
+  }
+}

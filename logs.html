@@ -98,8 +98,19 @@
     const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const userData = JSON.parse(localStorage.getItem('currentUser') || '{}');
+
+    // แสดงชื่อผู้ใช้ใน hamburger menu
     document.getElementById('hamburgerUser').textContent =
       userData.fullname || userData.username || 'ผู้ใช้';
+
+    // ตรวจสอบว่าเป็น admin หรือไม่
+    if (userData.username === 'admin') {
+      const adminLink = document.createElement('a');
+      adminLink.href = 'books_admin_view.html';
+      adminLink.textContent = '🛠 จัดการหนังสือ';
+      document.getElementById('hamburgerDropdown').appendChild(adminLink);
+    }
+
 
     async function loadLogs() {
       // ดึงข้อมูล bookMap ก่อน
@@ -132,7 +143,7 @@
         $('#login-log-table').DataTable({
           pageLength: 10,
           language: {
-            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/th.json'
+            url: 'https://cdn.datatables.net/plug-ins/1.13.6/i18n/th.json'
           },
           dom: '<"top-container"<"left-search"f><"right-length"l>>rt<"bottom-container"<"left-paging"p><"right-info"i>>'
         });
@@ -183,7 +194,7 @@
 
       } else {
         // 🔒 ถ้าไม่ใช่ admin ดึงเฉพาะของตัวเอง
-        document.querySelector('h2').style.display = 'none';
+        document.querySelector('h2:nth-of-type(1)').style.display = 'none'; // ซ่อนเฉพาะ "📜 ประวัติการ Login"
         document.getElementById('login-log-table').style.display = 'none';
 
         const { data: myReads } = await client
@@ -192,31 +203,48 @@
           .eq('user_id', userData.id)
           .order('read_at', { ascending: false });
 
-        const readTable = document.querySelector('#read-log-table tbody');
+        let myReadHTML = '';
         myReads.forEach((log, index) => {
           const dateObj = new Date(log.read_at);
           const shortDate = dateObj.toLocaleDateString('en-GB');
-          const shortTime = dateObj.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+          const shortTime = dateObj.toLocaleTimeString('en-US', {
+            hour: 'numeric',
+            minute: '2-digit',
+            hour12: true
+          });
 
-          const row = `
-      <tr>
-        <td>${index + 1}</td>
-        <td>${userData.username}</td>
-        <td>${log.book_title}</td>
-        <td>${shortDate}<br>${shortTime}</td>
-        <td>
-            <a href="reader.html?file=${encodeURIComponent(bookMap[log.book_title])}" target="_blank">
-            <button class="read-btn" title="อ่านต่อ">
-              <i class="bi bi-book" style="font-size: 1.2rem;"></i>
-            </button>
-          </a>
-        </td>
-      </tr>`;
-          readTable.innerHTML += row;
+          myReadHTML += `
+    <tr>
+      <td>${index + 1}</td>
+      <td>${userData.fullname || userData.username}</td>
+      <td>${log.book_title}</td>
+      <td>${shortDate}<br>${shortTime}</td>
+      <td>
+        <a href="reader.html?file=${encodeURIComponent(bookMap[log.book_title])}" target="_blank">
+          <button class="read-btn" title="อ่านต่อ">
+            <i class="bi bi-book" style="font-size: 1.2rem;"></i>
+          </button>
+        </a>
+      </td>
+    </tr>`;
         });
+
+        const readTable = document.querySelector('#read-log-table tbody');
+        readTable.innerHTML = myReadHTML;
+
+        // ✅ รีเฟรชหรือ init DataTable
+        if ($.fn.DataTable.isDataTable('#read-log-table')) {
+          $('#read-log-table').DataTable().destroy();
+        }
+        $('#read-log-table').DataTable({
+          pageLength: 10,
+          language: {
+            url: '//cdn.datatables.net/plug-ins/1.13.6/i18n/th.json'
+          }
+        });
+
       }
     }
-
 
     // เรียกตอนโหลดหน้า
     loadLogs();

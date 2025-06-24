@@ -67,6 +67,7 @@ html, body {
   overflow-y: auto;
   z-index: 999;
   width: 100%;
+  text-align: left;
 }
 .dropdown-list.show {
   display: block;
@@ -202,6 +203,7 @@ html, body {
 .hamburger-dropdown a:hover {
   background-color: #f0f0f0;
 }
+
 h2 {
   text-align: center;
     align-items: center;
@@ -227,29 +229,34 @@ main h2 {
 
 
 
-/* Footer */
 footer {
-  width: 100%;
-  margin-top: auto;
-  font-family: 'Noto Sans Thai', sans-serif;
-}
-.footer-top,
-.footer-bottom {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px;
-  text-align: center;
-  font-size: 14px;
-}
-.footer-top {
-  background-color: #000080;
-  color: white;
-}
-.footer-bottom {
-  background-color: #e0b700;
-  color: black;
-}
+      width: 100%;
+      font-family: 'Noto Sans Thai', sans-serif;
+      margin-top: auto;
+    }
+
+    .footer-top,
+    .footer-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 5px 10px;
+      text-align: center;
+    }
+
+    .footer-top {
+      background-color: #000080;
+      color: white;
+      font-size: 14px;
+      height: auto;
+    }
+
+    .footer-bottom {
+      background-color: #e0b700;
+      color: black;
+      font-size: 14px;
+      height: auto;
+    }
 
 /* Responsive */
 @media (max-width: 600px) {
@@ -273,4 +280,19 @@ footer {
     font-size: 12px;
     flex-direction: column;
   }
+  .login-header span{
+  font-size: 24px;
+}
+.book-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: #f9f9f9;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: transform 0.3s ease;
+  width: 155px;
+  padding: 10px;
+}
 }
